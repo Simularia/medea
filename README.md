@@ -1,5 +1,19 @@
 # eolo
 
+## OUTLINE
+
+- Parametri di input:
+
+    - pemtim generato esternamente
+    - file di test con data, ora, ws, wd: può venire da R o da postbin
+    - Lista delle sorgenti contenute dal pemtim da modulare
+    - Algoritmo da applicare: odore, polveri da cumuli bassi, polvere da cumuli alti, etc.
+    - path del pemtim in output
+
+- Valutare se mettere i parametri di input in un file di configurazione
+
+
+-------------------------------------------------------------------------------
 
 
 ## Getting started
