@@ -5,7 +5,8 @@ import argparse
 import logging
 from pathlib import Path, PurePath
 from datetime import datetime, timedelta
-
+from pemtim import pemtim
+from met import readmet, writemet
 
 __version__ = '0.0.1'
 
@@ -68,7 +69,16 @@ def main():
     debug = args.debug
     cFile = Path(args.c)
 
+    # read input configuration file
     conf = readconf(cFile)
+    # read meteorological file
+    met = readmet(conf)
+    # write meteorological file
+    metout = writemet(conf, met)
+    # read and write pemtim file
+    pemtim(conf, met)
+
+    return
 
 # Execute script as a standalone application
 if __name__ == "__main__":
