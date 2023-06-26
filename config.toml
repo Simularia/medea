@@ -1,0 +1,10 @@
+input = "./pemtim"
+output = "./pemtimout"
+pemspe = "./pemspe"
+windinputfile = "./wind.csv"
+windoutputfile = "./windout.csv"
+sources = [1, 3, 6]
+scheme = [1, 2, 1]
+# 1 = odore, 2 = polveri da cumuli bassi, 3 = polvere da cumuli alti, etc.
+height = [5, 5, 5]
+species = ["PM10", "PM25"]
