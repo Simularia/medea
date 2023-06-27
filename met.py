@@ -3,11 +3,11 @@ import pandas as pd
 
 
 
-from factor import factor
+from factor import computefactor
 
 
 def readmet(conf):
-    # rea input csv meteo file
+    # read input csv meteo file
     met = pd.read_csv(conf['windinputfile'])
     return met
 

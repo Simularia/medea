@@ -76,7 +76,7 @@ def main():
     # write meteorological file
     metout = writemet(conf, met)
     # read and write pemtim file
-    pemtim(conf, met)
+    pemtim(conf, metout)
 
     return
 
