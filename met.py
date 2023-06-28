@@ -10,10 +10,13 @@
 
 import pandas as pd
 from factor import computefactor
-
+import logging
 
 def readmet(conf):
     """Read meteo file in input."""
+    logger = logging.getLogger()
+    logger.info('{}'.format(readmet.__doc__))
+
     # read input csv meteo file in a pandas dataframe
     met = pd.read_csv(conf['windinputfile'])
     return met
@@ -21,6 +24,9 @@ def readmet(conf):
 
 def writemet(conf, met):
     """Write meteo file in output with rescaling factors."""
+    logger = logging.getLogger()
+    logger.info('{}'.format(writemet.__doc__))
+
     # build output meteo and factor dataframe
     columns = ['date', 'wd', 'ws']
     for i in conf['source']:

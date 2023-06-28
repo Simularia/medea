@@ -9,9 +9,14 @@
 ###############################################################################
 import pandas as pd
 from datetime import datetime, timedelta
+import logging
 
 def pemtim(conf, metout):
     """Modulate emission from existing pemtim."""
+
+    logger = logging.getLogger()
+    logger.info('{}'.format(pemtim.__doc__))
+
     # opening pemspe and reading the number of species
     with open(conf['pemspe'],'r') as ps:
         pemspe = [line.rstrip() for line in ps]
