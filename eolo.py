@@ -22,6 +22,10 @@ __version__ = '0.0.1'
 
 
 def readconf(cFile):
+    """Read toml configuration file."""
+
+    logger = logging.getLogger()
+    logger.info('{}'.format(readconf.__doc__))
     # Load the TOML data into a Python dictionary
     with open(cFile) as f:
         conf = toml.load(f)
