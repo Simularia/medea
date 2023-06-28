@@ -18,7 +18,7 @@ def pemtim(conf, metout):
     logger.info('{}'.format(pemtim.__doc__))
 
     # opening pemspe and reading the number of species
-    with open(conf['pemspe'],'r') as ps:
+    with open(conf['pemspe'], 'r') as ps:
         pemspe = [line.rstrip() for line in ps]
 
     nspe = int(pemspe[1].split())
@@ -57,14 +57,14 @@ def pemtim(conf, metout):
                     for j in range(0,3):
                         output.write(lines[ind+j]+'\n')
                         ind += 3
-                else
+                else:
                     for j in range(0,2):
                         output.write(lines[ind+j]+'\n')
                         ind += 2
             # read and process all species
             for ispe in range(1, nspe+1): 
                 spe = str(lines[ind].split('#')[1])
-                if sou in conf['source'] and spe in conf['species']:
+                if sou in conf['sources'] and spe in conf['species']:
                     factor = metout.iloc[metind, str(sou)+spe]
                     oldmass = float(lines[ind].split('#')[2])
                     newmass = factor*oldmass

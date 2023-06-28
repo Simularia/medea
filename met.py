@@ -29,7 +29,7 @@ def writemet(conf, met):
 
     # build output meteo and factor dataframe
     columns = ['date', 'wd', 'ws']
-    for i in conf['source']:
+    for i in conf['sources']:
         for j in conf['species']:
             columns.append(str(i)+j)
     metout = pd.DataFrame([],columns=columns, index = range(1, len(met.index + 1)))
@@ -41,9 +41,9 @@ def writemet(conf, met):
         wd = met.iloc[idx, 'wd']
         # for each combination of source and species
         # compute the rescaling factor
-        for i in conf['source']:
+        for i in conf['sources']:
             for j in conf['species']:
-                ind = conf['source'].index(i)
+                ind = conf['sources'].index(i)
                 scheme = conf['scheme'][ind]
                 height = conf['height'][ind]
                 fact = computefactor(scheme, ws, height)

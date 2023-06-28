@@ -9,14 +9,12 @@
 #
 ###############################################################################
 
-import toml
-import pandas as pd
 import argparse
 import logging
-from pathlib import Path, PurePath
-from datetime import datetime, timedelta
+from pathlib import Path
 from pemtim import pemtim
 from met import readmet, writemet
+import tomli
 
 __version__ = '0.0.1'
 
@@ -27,8 +25,8 @@ def readconf(cFile):
     logger = logging.getLogger()
     logger.info('{}'.format(readconf.__doc__))
     # Load the TOML data into a Python dictionary
-    with open(cFile) as f:
-        conf = toml.load(f)
+    with open(cFile, 'rb') as f:
+        conf = tomli.load(f)
 
     return conf
 
@@ -44,9 +42,9 @@ def main():
                         '--debug',
                         help="Activate debug mode",
                         action='store_true')
-    parser.add_argument('-c',
-                        type=str,
-                        help='Path to input configuration toml file.')
+    # parser.add_argument('-c',
+    #                     type=str,
+    #                     help="Path to input configuration toml file.")
 
     args = parser.parse_args()
 
@@ -81,7 +79,8 @@ def main():
 
     # Get path of input and output files
     debug = args.debug
-    cFile = Path(args.c)
+    # cFile = Path(args.config)
+    cFile = Path("prova.toml")
 
     # read input configuration file
     conf = readconf(cFile)
