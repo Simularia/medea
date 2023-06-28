@@ -1,18 +1,26 @@
+###############################################################################
+#
+# Simularia s.r.l.
+# via Sant'Antonio da Padova 12
+# Torino, Italy
+# www.simularia.it
+# info@simularia.it
+#
+###############################################################################
+
 import pandas as pd
-
-
-
-
 from factor import computefactor
 
 
 def readmet(conf):
-    # read input csv meteo file
+    """Read meteo file in input."""
+    # read input csv meteo file in a pandas dataframe
     met = pd.read_csv(conf['windinputfile'])
     return met
 
 
 def writemet(conf, met):
+    """Write meteo file in output with rescaling factors."""
     # build output meteo and factor dataframe
     columns = ['date', 'wd', 'ws']
     for i in conf['source']:
@@ -25,6 +33,8 @@ def writemet(conf, met):
         ws = met.iloc[idx, 'ws']
         date = met.iloc[idx, 'date']
         wd = met.iloc[idx, 'wd']
+        # for each combination of source and species
+        # compute the rescaling factor
         for i in conf['source']:
             for j in conf['species']:
                 ind = conf['source'].index(i)

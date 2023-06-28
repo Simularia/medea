@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+###############################################################################
+#
+# Simularia s.r.l.
+# via Sant'Antonio da Padova 12
+# Torino, Italy
+# www.simularia.it
+# info@simularia.it
+#
+###############################################################################
+
 import toml
 import pandas as pd
 import argparse
