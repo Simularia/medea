@@ -11,7 +11,7 @@ import pandas as pd
 from datetime import datetime, timedelta
 import logging
 
-def pemtim(conf, metout):
+def pemtim(conf, met):
     """Modulate emission from existing pemtim."""
 
     logger = logging.getLogger()
@@ -20,8 +20,9 @@ def pemtim(conf, metout):
     # opening pemspe and reading the number of species
     with open(conf['pemspe'], 'r') as ps:
         pemspe = [line.rstrip() for line in ps]
+    # logger.debug()
 
-    nspe = int(pemspe[1].split())
+    nspe = int(pemspe[1])
     # opening the input pemtim
     with open(conf['input'],'r') as file:
         lines = [line.rstrip() for line in file]
@@ -46,31 +47,34 @@ def pemtim(conf, metout):
         date = refdate
 
         for iper in range(1, nper+1):
-            hms = [int(s) for s in lines[ind].split('#') if s.isdigit()]
+            dl = lines[ind].split('#')
+            hms = [int(s) for s in dl[2:5]]
             output.write(lines[ind]+'\n')
-            metind = metout.index[metout['date']==date.strftime('%Y-%m-%dT%H:%M:%SZ')]
-            date = date + timedelta(hour=hms[0])
+            metind = met.index[met['date']==date.strftime('%Y-%m-%dT%H:%M:%SZ')]
+            date = date + timedelta(hours=hms[0])
             ind += 1
             if iper == 1:
                 its = int(lines[ind].split('#')[5])
                 if its == 2:
                     for j in range(0,3):
                         output.write(lines[ind+j]+'\n')
-                        ind += 3
+                    ind += 3
                 else:
                     for j in range(0,2):
                         output.write(lines[ind+j]+'\n')
-                        ind += 2
+                    ind += 2
             # read and process all species
             for ispe in range(1, nspe+1): 
-                spe = str(lines[ind].split('#')[1])
+                spe = str(lines[ind].split('#')[1]).replace(" ", "")
                 if sou in conf['sources'] and spe in conf['species']:
-                    factor = metout.iloc[metind, str(sou)+spe]
+                    factor = met.iloc[metind][str(sou)+'_'+spe]
                     oldmass = float(lines[ind].split('#')[2])
                     newmass = factor*oldmass
-                    dummy = str(lines[ind].split('#')[3])
+                    dummy = int(lines[ind].split('#')[3])
                     output.write('{:3d}#{:<8s}#{:6.3E}#{:4d}#\n'
-                            .format(ispe, spe, newmass, dummy))
+                            .format(ispe, spe, float(newmass.iloc[0]), dummy))
+                else:
+                    output.write(lines[ind]+'\n')
                 ind += 1
 
 

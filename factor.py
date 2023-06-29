@@ -10,21 +10,24 @@
 
 import logging
 
-def computefactor(scheme, ws, height):
-    """Computing rescaling factor for wind-dependant pemtim emission."""
-    
-    logger = logging.getLogger()
-    logger.info('{}'.format(computefactor.__doc__))
-    
-    if scheme == 1:
-        factor = 2
-            # odour
-            # inserire formula per l'odore
-    if scheme == 2:
-        factor = 3
-            # cumuli alti?
-    if scheme == 3:
-        factor = 4
-            # cumuli bassi?
 
-    return factor
+def odour(met, conf, ind):
+    gamma = 0.5
+    beta = 3
+    vref = 0.3 
+    tmp = ((met['ws']*(met['z']/conf['height'][ind])**beta)/vref)**gamma
+    colname = str(conf['sources'][ind]) + '_' + conf['species'][0]
+    met.insert(len(met.columns), colname, round(tmp,2))
+    return met
+
+def scheme2(met, conf, ind):
+
+
+    return met
+
+
+def scheme3(met, conf, ind):
+    
+
+    return met
+

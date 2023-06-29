@@ -38,14 +38,14 @@ def main():
 
     desc = "EOLO: compute wind-dependent emissions for spray."
     parser = argparse.ArgumentParser(description=desc)
+
+    parser.add_argument('config',
+                        type=str,
+                        help="Path to input configuration toml file.")
     parser.add_argument('-d',
                         '--debug',
                         help="Activate debug mode",
                         action='store_true')
-    # parser.add_argument('-c',
-    #                     type=str,
-    #                     help="Path to input configuration toml file.")
-
     args = parser.parse_args()
 
     # Logging format
@@ -79,8 +79,8 @@ def main():
 
     # Get path of input and output files
     debug = args.debug
-    # cFile = Path(args.config)
-    cFile = Path("prova.toml")
+    cFile = Path(args.config)
+    # cFile = Path("prova.toml")
 
     # read input configuration file
     conf = readconf(cFile)
