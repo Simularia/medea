@@ -15,29 +15,50 @@ def pemtim(conf, met):
     """Modulate emission from existing pemtim."""
 
     logger = logging.getLogger()
-    logger.info('{}'.format(pemtim.__doc__))
+    logger.debug('{}'.format(pemtim.__doc__))
 
     # opening pemspe and reading the number of species
+    logger.debug(f"Reading pemspe file.")
     with open(conf['pemspe'], 'r') as ps:
         pemspe = [line.rstrip() for line in ps]
-    # logger.debug()
 
     nspe = int(pemspe[1])
+    logger.debug(f"Number of species = {nspe}")
+
+    # checking the species in pemspe/pemtim
+    lspe = []
+    for k in range(0, nspe):
+        lspe.append(str(pemspe[3+k].split('*')[1].replace(" ", "")))
+        logger.debug(f"Specie no. {k+1} is {lspe[k]}.")
+
+    # checking configuration file species
+    for spe in conf['species']:
+        if spe not in lspe:
+            logger.info(f"{spe} in configuration file,")
+            logger.info(f"not present in pemtim/pemspe.") 
     # opening the input pemtim
     with open(conf['input'],'r') as file:
         lines = [line.rstrip() for line in file]
     # opening the output pemtim for writing
     output = open(conf['output'], 'w')
+    # writing the pemtim header
+    logger.debug(f"Writing the pemtim header.")
     for l in range(0,6):
         output.write(lines[l])
         output.write('\n')
+    # building the reference date 
     pdate = [int(s) for s in lines[5].split() if s.isdigit()]
     refdate = datetime(2000+pdate[2], pdate[1], pdate[0],
                        pdate[3], pdate[4], pdate[5])
-    nsou = int(lines[1].split()[0])
-    ind = 6
-    for isou in range(1, nsou+1):
+    logger.debug(f"Pemtim reference date is: {refdate}.")
 
+    # reading the number of sources
+    nsou = int(lines[1].split()[0])
+    logger.debug(f"Number of sources = {nsou}")
+
+    ind = 6
+    logger.debug(f"Starting the loop on sources.")
+    for isou in range(1, nsou+1):
         sou = int(lines[ind].split('#')[2])
         output.write(lines[ind]+'\n')
         ind += 1
@@ -67,6 +88,9 @@ def pemtim(conf, met):
             for ispe in range(1, nspe+1): 
                 spe = str(lines[ind].split('#')[1]).replace(" ", "")
                 if sou in conf['sources'] and spe in conf['species']:
+                    if iper == 1:
+                        logger.debug(f"Source {sou} has to be rescaled")
+                        logger.debug(f"on species {spe}.")
                     factor = met.iloc[metind][str(sou)+'_'+spe]
                     oldmass = float(lines[ind].split('#')[2])
                     newmass = factor*oldmass
@@ -76,6 +100,6 @@ def pemtim(conf, met):
                 else:
                     output.write(lines[ind]+'\n')
                 ind += 1
-
-
+    logger.debug(f"Output pemtim file written.")
+    output.close()
     return

@@ -25,13 +25,15 @@ def readmet(conf):
 def writemet(conf, met):
     """Write meteo file in output with rescaling factors."""
     logger = logging.getLogger()
-    logger.info('{}'.format(writemet.__doc__))
+    logger.debug('{}'.format(writemet.__doc__))
 
     
-
+    logger.debug(f"Loop on selected sources to rescale emissions.")
     for sou in conf['sources']:
         ind = conf['sources'].index(sou)
         scheme = conf['scheme'][ind]
+        logger.debug(f"Source = {sou}, scheme = {scheme}.")
+
         if scheme == 1:
             met = odour(met, conf, ind)
         if scheme == 2:
@@ -42,5 +44,6 @@ def writemet(conf, met):
 
 
     # write the output csv meteo and factor file
+    logger.debug(f"Writing the output csv meteo and factor file.")
     met.to_csv(conf['windoutputfile'], index = False)
     return met
