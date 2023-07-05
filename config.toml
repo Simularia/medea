@@ -3,10 +3,34 @@ output = "./test/pemtimout"
 pemspe = "./test/pemspe"
 windinputfile = "./test/windinput.csv"
 windoutputfile = "./test/windoutput.csv"
-sources = [1, 2]
-scheme = [1, 1]
-# 1 = odore, 2 = polveri da cumuli bassi, 3 = polvere da cumuli alti, etc.
-height = [5, 5]
-species = ["NOX"]
-terrain = "rural"
-movh = [5, 4] # movimentazioni all'ora
+
+sources = [
+    # sorgente odorigena
+    { id = 1, scheme = 1, species = ["OU"], height = 5, terrain = "rural", vref = 0.6},
+    # cumulo di polveri
+    { id = 2, scheme = 2, species = ["PTS", "PM25", "PM10"], height = 4, 
+    mass = 2.5E+10, roughness = 0.005, tfv = 1.0},  
+]
+
+
+
+#####################################################################################
+# Selects EPA parameters according to material:
+## Threshold friction velocity (m/s)
+# tfv = {'overburden':  1.02,
+#       'scoria':      1.33,
+#       'ground_coal': 0.55,
+#       'uncrusted_coal_pile': 1.12,
+#       'scraper_tracks' : 0.62,
+#       'fine_coal_dust' : 0.54,
+#       'custom_pile' : 0.62
+#       }
+## Roughness height (cm)
+# rh  = {'overburden':  0.3,
+#       'scoria':      0.3,
+#       'ground_coal': 0.01,
+#       'uncrusted_coal_pile': 0.3,
+#       'scraper_tracks' : 0.06,
+#       'fine_coal_dust' : 0.2,
+#       'custom_pile' : 0.15
+#       }

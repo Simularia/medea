@@ -10,6 +10,7 @@
 import pandas as pd
 from datetime import datetime, timedelta
 import logging
+import sys
 
 def pemtim(conf, met):
     """Modulate emission from existing pemtim."""
@@ -32,10 +33,19 @@ def pemtim(conf, met):
         logger.debug(f"Specie no. {k+1} is {lspe[k]}.")
 
     # checking configuration file species
-    for spe in conf['species']:
-        if spe not in lspe:
-            logger.info(f"{spe} in configuration file,")
-            logger.info(f"not present in pemtim/pemspe.") 
+    for sou in conf['sources']:
+        for spe in sou['species']:
+            if spe not in lspe:
+                logger.info(f"{spe} in source = {sou['id']} in the")
+                logger.info(f"configuration file,")
+                logger.info(f"not present in pemtim/pemspe.") 
+                logger.info(f"Exit: end procedure.") 
+                sys.exit()
+    # collecting all sources involved in config.toml
+    lsou = []
+    for k in range(0, len(conf['sources'])):
+        lsou.append(conf['sources'][k]['id'])
+    
     # opening the input pemtim
     with open(conf['input'],'r') as file:
         lines = [line.rstrip() for line in file]
@@ -67,6 +77,10 @@ def pemtim(conf, met):
         ind += 1
         date = refdate
 
+        iconfsou = lsou.index(sou)
+
+        scheme = conf['sources'][iconfsou]['scheme']
+
         for iper in range(1, nper+1):
             dl = lines[ind].split('#')
             hms = [int(s) for s in dl[2:5]]
@@ -87,13 +101,16 @@ def pemtim(conf, met):
             # read and process all species
             for ispe in range(1, nspe+1): 
                 spe = str(lines[ind].split('#')[1]).replace(" ", "")
-                if sou in conf['sources'] and spe in conf['species']:
+                if sou in lsou and spe in conf['sources'][iconfsou]['species']:
                     if iper == 1:
                         logger.debug(f"Source {sou} has to be rescaled")
                         logger.debug(f"on species {spe}.")
                     factor = met.iloc[metind][str(sou)+'_'+spe]
-                    oldmass = float(lines[ind].split('#')[2])
-                    newmass = factor*oldmass
+                    if scheme == 1:
+                        oldmass = float(lines[ind].split('#')[2])
+                        newmass = factor*oldmass
+                    if (scheme == 2) | (scheme == 3):
+                        newmass = factor
                     dummy = int(lines[ind].split('#')[3])
                     output.write('{:3d}#{:<8s}#{:6.3E}#{:4d}#\n'
                             .format(ispe, spe, float(newmass.iloc[0]), dummy))

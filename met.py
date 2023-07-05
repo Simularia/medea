@@ -29,9 +29,8 @@ def writemet(conf, met):
 
     
     logger.debug(f"Loop on selected sources to rescale emissions.")
-    for sou in conf['sources']:
-        ind = conf['sources'].index(sou)
-        scheme = conf['scheme'][ind]
+    for ind, sou in enumerate(conf['sources']):
+        scheme = conf['sources'][ind]['scheme']
         logger.debug(f"Source = {sou}, scheme = {scheme}.")
 
         if scheme == 1:
