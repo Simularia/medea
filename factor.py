@@ -139,7 +139,49 @@ def scheme2(met, conf, ind):
 
 
 def scheme3(met, conf, ind):
-    
+    """Cumulus scheme to set emissions in absence of wind data."""
+    logger = logging.getLogger()
+    logger.debug('{}'.format(scheme2.__doc__))
+    sou = conf['sources'][ind]
+    if set(sou['species']) != set(['PM25', 'PM10', 'PTS']):
+        logger.info(f"Invalid species in source {sou['id']}: exit.")
+        sys.exit()
+
+    listnw = ['radius', 'height', 'movh']
+    conic = all(item in sou.keys() for item in listnw)
+    if conic:
+        r = sou['radius']
+        h = sou['height']
+        s = math.pi*r*math.sqrt(r**2 + h**2)
+        movh = sou['movh']
+    else:
+        logger.info(f"Missing parameters in source {sou['id']}: exit.")
+        sys.exit()
+
+
+    if (h/(2*r)>0.2):
+        logger.debug(f"High mounds case.")  
+        efpm25 = 1.26E-06
+        efpm10 = 7.9E-06
+        efpts = 1.6E-05
+    else:
+        logger.debug(f"Low mounds case.")  
+        efpm25 = 3.8E-05
+        efpm10 = 2.5E-04
+        efpts = 5.1E-04
+
+    epm25 = (10**9)*efpm25*s*movh
+    epm10 = (10**9)*efpm10*s*movh
+    epts = (10**9)*efpts*s*movh
+    # building species name for met dataframe
+    pm25 = str(sou['id']) + '_' + 'PM25'
+    pm10 = str(sou['id']) + '_' + 'PM10'
+    pts = str(sou['id']) + '_' + 'PTS'
+
+    met.insert(len(met.columns), pm25, np.around(epm25, 2))
+    met.insert(len(met.columns), pm10, np.around(epm10, 2))
+    met.insert(len(met.columns), pts, np.around(epts,2))
+
 
     return met
 
