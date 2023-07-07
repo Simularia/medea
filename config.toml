@@ -7,8 +7,15 @@ windoutputfile = "./test/windoutput.csv"
 sources = [
     # sorgente odorigena
     { id = 1, scheme = 1, species = ["OU"], height = 5, terrain = "rural", vref = 0.6},
-    # cumulo di polveri
-    { id = 2, scheme = 2, species = ["PTS", "PM25", "PM10"], height = 4, mass = 2.5E+10, roughness = 0.005, tfv = 0.05},  
+    # erosione cumulo di polveri con base dati vento disponibile 
+    # forma piramidale (xmin, xmax, ymin, ymax)
+    { id = 2, scheme = 2, species = ["PTS", "PM25", "PM10"], height = 4, xmax = 5, xmin = 2, ymin = 2, ymax = 5, mass = 2.5E+10, roughness = 0.005, tfv = 0.05},  
+    # forma conica (radius)
+    { id = 3, scheme = 2, species = ["PTS", "PM25", "PM10"], height = 4, radius = 3, mass = 2.5E+10, roughness = 0.005, tfv = 0.05},  
+    # forma "piatta" (diameter) 
+    { id = 4, scheme = 2, species = ["PTS", "PM25", "PM10"], height = 4, diameter = 5, mass = 2.5E+10, roughness = 0.005, tfv = 0.05},  
+    # erosione cumulo di polveri con base dati vento non disponibile (radius è il raggio equivalente)
+    { id = 3, scheme = 3, species = ["PTS", "PM25", "PM10"], height = 4, radius = 3.6, movh = 4} 
 ]
 
 
