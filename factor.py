@@ -74,19 +74,26 @@ def scheme2(met, conf, ind):
         ap1 = math.sqrt((width / 5)**2 + sou['height']**2)
         ap2 = math.sqrt((height / 3)**2 + sou['height']**2)
         s = 8 * width * ap2 / 5 + 4 * height * ap1 / 3
+        logger.debug(f"Source {sou['id']} has pyramid shape.")
 
     elif conical:
         r = sou['radius']
         h = sou['height']
         s = math.pi*r*math.sqrt(r**2 + h**2)
+        logger.debug(f"Source {sou['id']} has conical shape.")
+
     elif flat:
         d = sou['diameter']
         h = sou['height']
         s = (math.pi/4)*d**2
+        logger.debug(f"Source {sou['id']} has flat shape.")
+
     else:
         logger.info(f"Undefined shape of source {sou['id']}: exit.")
         sys.exit()
-    # fastest mile
+
+
+    # from wind speed to fastest mile
     a = 1.6
     b = 0.43
     fm = a*met['ws'] + b
@@ -97,23 +104,29 @@ def scheme2(met, conf, ind):
     else:
         z0 = 0.005
 
+    # computing friction velocity
     ust = np.empty((len(fm), len(psba)))
-
     for idx, psbai in enumerate(psba):
         ust[:, idx] = 0.4*fm/np.log(25/z0)*psbai
-
     tfv = sou['tfv']*np.ones((len(fm), len(psba)))
-
     ust = np.where(ust > tfv, ust, tfv)
 
+
+    # erosion potential
     p = np.zeros_like(ust)
     p = 58*(ust - tfv)**2 + 25*(ust - tfv)
+
+
+    # parameter for PTS, PM25, PM10
     k25 = 0.075
     k10 = 0.5
     kpts = 1.0
+
+    # building the emission
     ptot = np.sum(p*s*(ppsa/100.0)*10**6., axis = 1)
 
 
+    # building species name for met dataframe
     pm25 = str(sou['id']) + '_' + 'PM25'
     pm10 = str(sou['id']) + '_' + 'PM10'
     pts = str(sou['id']) + '_' + 'PTS'

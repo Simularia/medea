@@ -8,8 +8,7 @@ sources = [
     # sorgente odorigena
     { id = 1, scheme = 1, species = ["OU"], height = 5, terrain = "rural", vref = 0.6},
     # cumulo di polveri
-    { id = 2, scheme = 2, species = ["PTS", "PM25", "PM10"], height = 4, 
-    mass = 2.5E+10, roughness = 0.005, tfv = 1.0},  
+    { id = 2, scheme = 2, species = ["PTS", "PM25", "PM10"], height = 4, mass = 2.5E+10, roughness = 0.005, tfv = 0.05},  
 ]
 
 
