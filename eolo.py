@@ -12,7 +12,7 @@
 import argparse
 import logging
 from pathlib import Path
-from pemtim import pemtim
+from emifile import pemtim, calpuff
 from met import readmet, writemet
 import tomli
 
@@ -85,25 +85,31 @@ def main():
     # Get path of input and output files
     debug = args.debug
     cFile = Path(args.config)
-
     # read input configuration file
-    logger.info(f"Reading input configuration file.")
+    logger.info("Reading input configuration file.")
     conf = readconf(cFile)
     # read meteorological file
-    logger.info(f"Reading meteorological input file.")
+    logger.info("Reading meteorological input file.")
     met = readmet(conf)
     # write meteorological file
-    logger.info(f"Writing meteorological input file and")
-    logger.info(f"computing new emission rescaling factor.")
+    logger.info("Writing meteorological input file and")
+    logger.info("computing new emission rescaling factor.")
     metout = writemet(conf, met)
-    # read and write pemtim file
-    logger.info(f"Editing pemtim file.")
-    pemtim(conf, metout)
-    logger.info(f"End of program.")
+    if conf['mode'] == 0:
+        # read and write pemtim file
+        logger.info("Editing pemtim file.")
+        pemtim(conf, metout)
+        logger.info("Pemtim file edited.")
 
+    if conf['mode'] == 1:
+        # read and write calpuff file
+        logger.info("Editing calpuff file.")
+        calpuff(conf, metout)
+        logger.info("Calpuff file edited.")
+
+    logger.info("End of program.")
     return
 
 # Execute script as a standalone application
 if __name__ == "__main__":
     main()
-
