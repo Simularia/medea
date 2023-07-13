@@ -11,6 +11,7 @@ from datetime import datetime, timedelta
 import logging
 import sys
 
+
 def pemtim(conf, met):
     """Modulate emission from existing pemtim."""
     logger = logging.getLogger()
@@ -36,14 +37,14 @@ def pemtim(conf, met):
             if spe not in lspe:
                 logger.info(f"{spe} in source = {sou['id']} in the")
                 logger.info("configuration file,")
-                logger.info("not present in pemtim/pemspe.") 
-                logger.info("Exit: end procedure.") 
+                logger.info("not present in pemtim/pemspe.")
+                logger.info("Exit: end procedure.")
                 sys.exit()
     # collecting all sources involved in config.toml
     lsou = []
     for k in range(0, len(conf['sources'])):
         lsou.append(conf['sources'][k]['id'])
-    
+
     # opening the input pemtim
     with open(conf['input'], 'r') as file:
         lines = [line.rstrip() for line in file]
@@ -82,7 +83,8 @@ def pemtim(conf, met):
             dl = lines[ind].split('#')
             hms = [int(s) for s in dl[2:5]]
             output.write(lines[ind]+'\n')
-            metind = met.index[met['date'] == date.strftime('%Y-%m-%dT%H:%M:%SZ')]
+            metind = met.index[met['date'] ==
+                               date.strftime('%Y-%m-%dT%H:%M:%SZ')]
             date = date + timedelta(hours=hms[0])
             ind += 1
             if iper == 1:
@@ -109,8 +111,9 @@ def pemtim(conf, met):
                     if (scheme == 2) | (scheme == 3):
                         newmass = factor._values
                     dummy = int(lines[ind].split('#')[3])
-                    output.write('{:3d}#{:<8s}#{:6.3E}#{:4d}#\n'
-                            .format(ispe, spe, float(newmass.iloc[0]), dummy))
+                    s2w = '{:3d}#{:<8s}#{:6.3E}#{:4d}#\n'
+                    output.write(s2w.format(ispe, spe,
+                                            float(newmass.iloc[0]), dummy))
                 else:
                     output.write(lines[ind]+'\n')
                 ind += 1
@@ -136,13 +139,13 @@ def calpuff(conf, met):
         lsou.append(conf['sources'][k]['id'])
 
     ncomm = int(lines[1])
-    proj = str(lines[ncomm].split(' ')[0]) 
+    proj = str(lines[ncomm].split(' ')[0])
     if proj in ["TTM", "LCC", "LAZA"]:
         ncomm = ncomm + 1
     nsou = int(lines[ncomm + 8].split(' ')[0])
     nspe = int(lines[ncomm + 8].split(' ')[1])
     lspe = [s.replace("'", "") for s in lines[ncomm + 9].split(" ")]
-    
+
     flag = 0
     for i in range(ncomm+10, len(lines)):
         if lines[i][0] == "'":
@@ -156,7 +159,8 @@ def calpuff(conf, met):
 
     for ind in range(start - 1, len(lines), nsou + 1):
         pdate = [int(s) for s in lines[ind].split() if s.isdigit()]
-        date = datetime(pdate[0], 1, 1, pdate[2], 0, pdate[3]) + timedelta(days = (pdate[1] - 1))
+        date = datetime(pdate[0], 1, 1,
+                        pdate[2], 0, pdate[3]) + timedelta(days=(pdate[1] - 1))
         metind = met.index[met['date'] == date.strftime('%Y-%m-%dT%H:%M:%SZ')]
         output.write(lines[ind] + '\n')
         for sou in range(0, nsou):
@@ -176,8 +180,11 @@ def calpuff(conf, met):
                         newmass = factor._values
                     newspe.append(newmass)
                 fstr = "{:<15s} {:3.2f} {:1.2f} {:1.1f} {:1.1f}"
-                output.write(fstr.format(lines[ind][0:15], float(line[-nspe-4]),
-                    float(line[-nspe-3]), float(line[-nspe-2]), float(line[-nspe-1])))
+                output.write(fstr.format(lines[ind][0:15],
+                                         float(line[-nspe-4]),
+                                         float(line[-nspe-3]),
+                                         float(line[-nspe-2]),
+                                         float(line[-nspe-1])))
                 for i in range(0, nspe):
                     output.write(" {:1.7E}".format(float(newspe[i])))
                 output.write("\n")

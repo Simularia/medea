@@ -12,6 +12,7 @@ import pandas as pd
 from factor import odour, scheme2, scheme3
 import logging
 
+
 def readmet(conf):
     """Read meteo file in input."""
     logger = logging.getLogger()
@@ -27,8 +28,7 @@ def writemet(conf, met):
     logger = logging.getLogger()
     logger.debug('{}'.format(writemet.__doc__))
 
-    
-    logger.debug(f"Loop on selected sources to rescale emissions.")
+    logger.debug("Loop on selected sources to rescale emissions.")
     for ind, sou in enumerate(conf['sources']):
         scheme = conf['sources'][ind]['scheme']
         logger.debug(f"Source = {sou}, scheme = {scheme}.")
@@ -40,9 +40,7 @@ def writemet(conf, met):
         if scheme == 3:
             met = scheme3(met, conf, ind)
 
-
-
     # write the output csv meteo and factor file
-    logger.debug(f"Writing the output csv meteo and factor file.")
-    met.to_csv(conf['windoutputfile'], index = False)
+    logger.debug("Writing the output csv meteo and factor file.")
+    met.to_csv(conf['windoutputfile'], index=False)
     return met

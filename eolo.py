@@ -28,10 +28,10 @@ def readconf(cFile):
     with open(cFile, 'rb') as f:
         conf = tomli.load(f)
     # debug information
-    logger.debug(f"Configuration toml file dump:")
+    logger.debug("Configuration toml file dump:")
     for key in conf.keys():
         logger.debug(f"{key}: {conf[key]}")
-    logger.debug(f"Configuration toml file read correctly.")
+    logger.debug("Configuration toml file read correctly.")
 
     return conf
 
@@ -83,7 +83,6 @@ def main():
     logger.info("======================")
 
     # Get path of input and output files
-    debug = args.debug
     cFile = Path(args.config)
     # read input configuration file
     logger.info("Reading input configuration file.")
@@ -110,6 +109,7 @@ def main():
     logger.info("End of program.")
     return
 
-# Execute script as a standalone application
+
 if __name__ == "__main__":
+
     main()

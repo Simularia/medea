@@ -22,4 +22,6 @@ optional arguments:
     anche se si sceglie l'algoritmo schema 3 che non necessita
     dei dati di vento: serve sempre almeno la data/ora
 - il pemtim deve essere nel formato tipo quello in "./test/pemtim"
+- il file calpuff deve essere nel formato come "./test/calpuffpolv"
+- la durata delle emissioni è oraria
 

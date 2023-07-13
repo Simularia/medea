@@ -15,23 +15,24 @@ import sys
 import math
 
 
-
 def odour(met, conf, ind):
     """Odour scheme for rescaling emissions."""
     logger = logging.getLogger()
     logger.debug('{}'.format(odour.__doc__))
 
     gamma = 0.5
-    dt = {'rural': [0.07, 0.07, 0.1, 0.15, 0.35, 0.55], 
+    dt = {'rural': [0.07, 0.07, 0.1, 0.15, 0.35, 0.55],
           'urban': [0.15, 0.15, 0.2, 0.25, 0.3, 0.3]}
 
     tab = pd.DataFrame(data=dt, index=["A", "B", "C", "D", "E", "F"])
     if 'terrain' in conf['sources'][ind].keys() and 'stabclass' in met.keys():
         logger.debug("Terrain type and stability class information")
         logger.debug("are available: computing beta.")
-        beta = pd.DataFrame(columns=['val'],
-                    data = tab[conf['sources'][ind]['terrain']][met['stabclass']].to_list(),
-                    index = met.index.values.tolist())
+        beta = pd.DataFrame(
+            columns=['val'],
+            data=tab[conf['sources'][ind]['terrain']][met['stabclass']]
+            .to_list(),
+            index=met.index.values.tolist())
     else:
         beta = 0.55
         logger.debug("Terrain type or stability class information")
@@ -41,14 +42,17 @@ def odour(met, conf, ind):
         logger.debug("Reference velocity available from the")
         logger.debug("configuration toml file.")
     else:
-        vref = 0.3 
+        vref = 0.3
         logger.debug("Reference velocity not available from the")
         logger.debug(f"configuration toml file: {vref} default value.")
-        
-    tmp = ((met['ws']*(met['z'].pow(beta['val']))/conf['sources'][ind]['height'])/vref)**gamma
-    colname = str(conf['sources'][ind]['id']) + '_' + conf['sources'][ind]['species'][0]
-    met.insert(len(met.columns), colname, round(tmp,2))
+
+    tmp = ((met['ws']*(met['z'].pow(beta['val'])) /
+            conf['sources'][ind]['height'])/vref)**gamma
+    colname = str(conf['sources'][ind]['id']) + '_' + \
+        conf['sources'][ind]['species'][0]
+    met.insert(len(met.columns), colname, round(tmp, 2))
     return met
+
 
 def scheme2(met, conf, ind):
     """Cumulus scheme to set emissions."""
@@ -62,7 +66,7 @@ def scheme2(met, conf, ind):
     psba = np.array([0.2, 0.6, 0.9])
     ppsa = np.array([40.0, 48.0, 12.0])
     listpyr = ['xmax', 'xmin', 'ymax', 'ymin', 'height']
-    pyramid = all(item in sou.keys() for item in listpyr) 
+    pyramid = all(item in sou.keys() for item in listpyr)
     listcon = ['radius', 'height']
     conical = all(item in sou.keys() for item in listcon)
     listflat = ['diameter', 'height']
@@ -91,7 +95,6 @@ def scheme2(met, conf, ind):
         logger.info(f"Undefined shape of source {sou['id']}: exit.")
         sys.exit()
 
-
     # from wind speed to fastest mile
     a = 1.6
     b = 0.43
@@ -114,15 +117,13 @@ def scheme2(met, conf, ind):
     p = np.zeros_like(ust)
     p = 58*(ust - tfv)**2 + 25*(ust - tfv)
 
-
     # parameter for PTS, PM25, PM10
     k25 = 0.075
     k10 = 0.5
     kpts = 1.0
 
     # building the emission
-    ptot = np.sum(p*s*(ppsa/100.0)*10**6., axis = 1)
-
+    ptot = np.sum(p*s*(ppsa/100.0)*10**6., axis=1)
 
     # building species name for met dataframe
     pm25 = str(sou['id']) + '_' + 'PM25'
@@ -155,9 +156,8 @@ def scheme3(met, conf, ind):
         logger.info(f"Missing parameters in source {sou['id']}: exit.")
         sys.exit()
 
-
     if (h/(2*r) > 0.2):
-        logger.debug("High mounds case.")  
+        logger.debug("High mounds case.")
         efpm25 = 1.26E-06
         efpm10 = 7.9E-06
         efpts = 1.6E-05
@@ -178,6 +178,5 @@ def scheme3(met, conf, ind):
     met.insert(len(met.columns), pm25, np.around(epm25, 2))
     met.insert(len(met.columns), pm10, np.around(epm10, 2))
     met.insert(len(met.columns), pts, np.around(epts, 2))
-
 
     return met
