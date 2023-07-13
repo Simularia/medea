@@ -27,22 +27,22 @@ def odour(met, conf, ind):
 
     tab = pd.DataFrame(data=dt, index=["A", "B", "C", "D", "E", "F"])
     if 'terrain' in conf['sources'][ind].keys() and 'stabclass' in met.keys():
-        logger.debug(f"Terrain type and stability class information")
-        logger.debug(f"are available: computing beta.")
+        logger.debug("Terrain type and stability class information")
+        logger.debug("are available: computing beta.")
         beta = pd.DataFrame(columns=['val'],
                     data = tab[conf['sources'][ind]['terrain']][met['stabclass']].to_list(),
                     index = met.index.values.tolist())
     else:
         beta = 0.55
-        logger.debug(f"Terrain type or stability class information")
+        logger.debug("Terrain type or stability class information")
         logger.debug(f"are missing: default beta value = {beta}.")
     if 'vref' in conf['sources'][ind].keys():
         vref = conf['sources'][ind]['vref']
-        logger.debug(f"Reference velocity available from the")
-        logger.debug(f"configuration toml file.")
+        logger.debug("Reference velocity available from the")
+        logger.debug("configuration toml file.")
     else:
         vref = 0.3 
-        logger.debug(f"Reference velocity not available from the")
+        logger.debug("Reference velocity not available from the")
         logger.debug(f"configuration toml file: {vref} default value.")
         
     tmp = ((met['ws']*(met['z'].pow(beta['val']))/conf['sources'][ind]['height'])/vref)**gamma
@@ -110,7 +110,6 @@ def scheme2(met, conf, ind):
     tfv = sou['tfv']*np.ones((len(fm), len(psba)))
     ust = np.where(ust > tfv, ust, tfv)
 
-
     # erosion potential
     p = np.zeros_like(ust)
     p = 58*(ust - tfv)**2 + 25*(ust - tfv)
@@ -130,11 +129,9 @@ def scheme2(met, conf, ind):
     pm10 = str(sou['id']) + '_' + 'PM10'
     pts = str(sou['id']) + '_' + 'PTS'
 
-    met.insert(len(met.columns), pm25, np.around(k25*ptot*sou['mass'],2))
-    met.insert(len(met.columns), pm10, np.around(k10*ptot*sou['mass'],2))
-    met.insert(len(met.columns), pts, np.around(kpts*ptot*sou['mass'],2))
-
-
+    met.insert(len(met.columns), pm25, np.around(k25*ptot*sou['mass'], 2))
+    met.insert(len(met.columns), pm10, np.around(k10*ptot*sou['mass'], 2))
+    met.insert(len(met.columns), pts, np.around(kpts*ptot*sou['mass'], 2))
     return met
 
 
@@ -159,13 +156,13 @@ def scheme3(met, conf, ind):
         sys.exit()
 
 
-    if (h/(2*r)>0.2):
-        logger.debug(f"High mounds case.")  
+    if (h/(2*r) > 0.2):
+        logger.debug("High mounds case.")  
         efpm25 = 1.26E-06
         efpm10 = 7.9E-06
         efpts = 1.6E-05
     else:
-        logger.debug(f"Low mounds case.")  
+        logger.debug("Low mounds case.")
         efpm25 = 3.8E-05
         efpm10 = 2.5E-04
         efpts = 5.1E-04
@@ -180,8 +177,7 @@ def scheme3(met, conf, ind):
 
     met.insert(len(met.columns), pm25, np.around(epm25, 2))
     met.insert(len(met.columns), pm10, np.around(epm10, 2))
-    met.insert(len(met.columns), pts, np.around(epts,2))
+    met.insert(len(met.columns), pts, np.around(epts, 2))
 
 
     return met
-

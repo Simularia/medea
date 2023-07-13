@@ -11,7 +11,6 @@ from datetime import datetime, timedelta
 import logging
 import sys
 
-
 def pemtim(conf, met):
     """Modulate emission from existing pemtim."""
     logger = logging.getLogger()
@@ -106,9 +105,9 @@ def pemtim(conf, met):
                     factor = met.iloc[metind][str(sou)+'_'+spe]
                     if scheme == 1:
                         oldmass = float(lines[ind].split('#')[2])
-                        newmass = factor*oldmass
+                        newmass = oldmass*factor._values
                     if (scheme == 2) | (scheme == 3):
-                        newmass = factor
+                        newmass = factor._values
                     dummy = int(lines[ind].split('#')[3])
                     output.write('{:3d}#{:<8s}#{:6.3E}#{:4d}#\n'
                             .format(ispe, spe, float(newmass.iloc[0]), dummy))
@@ -157,13 +156,13 @@ def calpuff(conf, met):
 
     for ind in range(start - 1, len(lines), nsou + 1):
         pdate = [int(s) for s in lines[ind].split() if s.isdigit()]
-
         date = datetime(pdate[0], 1, 1, pdate[2], 0, pdate[3]) + timedelta(days = (pdate[1] - 1))
         metind = met.index[met['date'] == date.strftime('%Y-%m-%dT%H:%M:%SZ')]
         output.write(lines[ind] + '\n')
         for sou in range(0, nsou):
             ind = ind + 1
-            namesou = str(lines[ind].split("'")[1])
+            namesou = str(lines[ind][0:15].split("'")[1])
+            line = lines[ind][16:].split(' ')
             if namesou in lsou:
                 newspe = []
                 iconfsou = lsou.index(namesou)
@@ -171,18 +170,16 @@ def calpuff(conf, met):
                 for s in range(0, nspe):
                     factor = met.iloc[metind][namesou+'_'+lspe[s]]
                     if scheme == 1:
-                        oldmass = float(lines[ind].split(' ')[5+s])
-                        newmass = factor*oldmass
+                        oldmass = float(line[5+s])
+                        newmass = oldmass*factor._values
                     if (scheme == 2) | (scheme == 3):
-                        newmass = factor
+                        newmass = factor._values
                     newspe.append(newmass)
-                line = lines[ind].split(" ")
-                nl = len(line)
-                fstr = "'{:<10s}' {:3.2f} {:1.2f} {:1.1f} {:1.1f}"
-                output.write(fstr.format(namesou, float(line[nl-nspe-4]),
-                    float(line[nl-nspe-3]), float(line[nl-nspe-2]), float(line[nl-nspe-1])))
+                fstr = "{:<15s} {:3.2f} {:1.2f} {:1.1f} {:1.1f}"
+                output.write(fstr.format(lines[ind][0:15], float(line[-nspe-4]),
+                    float(line[-nspe-3]), float(line[-nspe-2]), float(line[-nspe-1])))
                 for i in range(0, nspe):
-                    output.write(" {:1.7E}".format(newspe[i]))
+                    output.write(" {:1.7E}".format(float(newspe[i])))
                 output.write("\n")
             else:
                 output.write(lines[ind] + '\n')
