@@ -117,8 +117,9 @@ def pemtim(conf, met):
                 else:
                     output.write(lines[ind]+'\n')
                 ind += 1
-    logger.debug("Output pemtim file written.")
+    file.close()
     output.close()
+    logger.debug("Output pemtim file written.")
     return
 
 
@@ -138,6 +139,7 @@ def calpuff(conf, met):
     for k in range(0, len(conf['sources'])):
         lsou.append(conf['sources'][k]['id'])
 
+    # read source and species information
     ncomm = int(lines[1])
     proj = str(lines[ncomm].split(' ')[0])
     if proj in ["TTM", "LCC", "LAZA"]:
@@ -146,6 +148,7 @@ def calpuff(conf, met):
     nspe = int(lines[ncomm + 8].split(' ')[1])
     lspe = [s.replace("'", "") for s in lines[ncomm + 9].split(" ")]
 
+    # search the time-variant part of the file
     flag = 0
     for i in range(ncomm+10, len(lines)):
         if lines[i][0] == "'":
@@ -153,10 +156,11 @@ def calpuff(conf, met):
         if flag == (nsou + 1):
             start = i
             break
-
+            # write the header information
+    logger.debug("Writing the header part of file.")
     for i in range(0, start-1):
         output.write(lines[i] + '\n')
-
+    logger.debug("Writing the time-variant part of file.")
     for ind in range(start - 1, len(lines), nsou + 1):
         pdate = [int(s) for s in lines[ind].split() if s.isdigit()]
         date = datetime(pdate[0], 1, 1,
@@ -179,18 +183,22 @@ def calpuff(conf, met):
                     if (scheme == 2) | (scheme == 3):
                         newmass = factor._values
                     newspe.append(newmass)
+                # write the source information
                 fstr = "{:<15s} {:3.2f} {:1.2f} {:1.1f} {:1.1f}"
                 output.write(fstr.format(lines[ind][0:15],
                                          float(line[-nspe-4]),
                                          float(line[-nspe-3]),
                                          float(line[-nspe-2]),
                                          float(line[-nspe-1])))
+                # for each species write the modified emission
                 for i in range(0, nspe):
                     output.write(" {:1.7E}".format(float(newspe[i])))
                 output.write("\n")
             else:
+                # otherwise write the line without modifications
                 output.write(lines[ind] + '\n')
-
+    # closing input and output files
     output.close()
     file.close()
+    logger.debug("Output calpuff file written.")
     return
