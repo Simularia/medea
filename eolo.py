@@ -12,7 +12,7 @@
 import argparse
 import logging
 from pathlib import Path
-from emifile import pemtim, calpuff
+from emifile import pemtim, calpuff, impact
 from met import readmet, writemet
 import tomli
 
@@ -105,6 +105,12 @@ def main():
         logger.info("Editing calpuff file.")
         calpuff(conf, metout)
         logger.info("Calpuff file edited.")
+
+    if conf['mode'] == 2:
+        # read and write impact file
+        logger.info("Editing impact file.")
+        impact(conf, metout)
+        logger.info("Impact file edited.")
 
     logger.info("End of program.")
     return

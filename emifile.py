@@ -10,6 +10,7 @@
 from datetime import datetime, timedelta
 import logging
 import sys
+import pandas as pd
 
 
 def pemtim(conf, met):
@@ -156,7 +157,7 @@ def calpuff(conf, met):
         if flag == (nsou + 1):
             start = i
             break
-            # write the header information
+    # write the header information
     logger.debug("Writing the header part of file.")
     for i in range(0, start-1):
         output.write(lines[i] + '\n')
@@ -201,4 +202,48 @@ def calpuff(conf, met):
     output.close()
     file.close()
     logger.debug("Output calpuff file written.")
+    return
+
+
+def impact(conf, met):
+    """Modulate emission from existing impact emissions input."""
+    logger = logging.getLogger()
+    logger.debug('{}'.format(impact.__doc__))
+
+    # opening the input impact emissions input
+    file = pd.DataFrame(pd.read_csv(conf['input'], sep=";"))
+
+    lsout = []
+    # collecting all sources involved in config.toml
+    lsou = []
+    for k in range(0, len(conf['sources'])):
+        lsou.append(conf['sources'][k]['id'])
+    # configuration file species
+    cspe = []
+    for sou in conf['sources']:
+        for spe in sou['species']:
+            cspe.append(spe)
+    # reading each lines of input
+    for index, row in file.iterrows():
+        date = datetime.strptime(row['DATEDEB'], '%d-%m-%Y %H:%M:%S')
+        metind = met.index[met['date'] ==
+                           date.strftime('%Y-%m-%dT%H:%M:%SZ')]
+        sou = row['SRCEID']
+        if sou in lsou:
+            iconfsou = lsou.index(sou)
+            scheme = conf['sources'][iconfsou]['scheme']
+            for spe in cspe:
+                factor = met.iloc[metind][str(sou)+'_'+spe]
+                qspe = 'Q_' + spe
+                if scheme == 1:
+                    oldmass = float(row[qspe])
+                    newmass = oldmass*factor._values
+                if (scheme == 2) | (scheme == 3):
+                    newmass = factor._values
+                row[qspe] = newmass
+        lsout.append(row)
+
+    output = pd.DataFrame(lsout)
+    # writing output csv file
+    output.to_csv(conf['output'], index=False)
     return

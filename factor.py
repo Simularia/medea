@@ -34,7 +34,7 @@ def odour(met, conf, ind):
             .to_list(),
             index=met.index.values.tolist())
     else:
-        beta = 0.55 # default value
+        beta = 0.55  # default value
         logger.debug("Terrain type or stability class information")
         logger.debug(f"are missing: default beta value = {beta}.")
     if 'vref' in conf['sources'][ind].keys():
