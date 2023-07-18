@@ -245,5 +245,5 @@ def impact(conf, met):
 
     output = pd.DataFrame(lsout)
     # writing output csv file
-    output.to_csv(conf['output'], index=False)
+    output.to_csv(conf['output'], index=False, sep=";")
     return
