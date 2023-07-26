@@ -13,7 +13,6 @@ import sys
 import pandas as pd
 
 
-
 def pemtim(conf, met):
     """Modulate emission from existing pemtim."""
     logger = logging.getLogger()
@@ -268,17 +267,20 @@ def aermod(conf, met):
 
     s2w = '{:2s} {:8s} {:2d} {:>2d} {:>2d} {:>2d} {:<7s} '
     ns = len(lines[0].split()) - 7
-
+    # processing each line of the emission file
     for ind in range(0, len(lines)):
         line = lines[ind].split()
         sou = str(line[6])
+        # if the source has to be processed
         if sou in lsou:
+            # build datetime from emission file line
             date = datetime(year=2000 + int(line[2]),
                             month=int(line[3]),
                             day=int(line[4]),
                             hour=(int(line[5]) - 1),
                             minute=0, second=0)
             date = date + timedelta(hours=1)
+            # find the corresponding emission factor
             metind = met.index[met['date'] ==
                                date.strftime('%Y-%m-%dT%H:%M:%SZ')]
             iconfsou = lsou.index(sou)
@@ -293,17 +295,21 @@ def aermod(conf, met):
             newline = line
             newline[7] = newmass.item(0)
         else:
+            # in this case the line does not change
             newline = line
+        # writing the new line or simply copy the
+        # existing one
         output.write(s2w.format(newline[0], newline[1],
                                 int(newline[2]),
                                 int(newline[3]),
                                 int(newline[4]),
                                 int(newline[5]),
                                 newline[6]))
-
         output.write('{:>6.3f} '.format(newline[7]))
+        # formatting the elements after the emission rate
         for i in range(1, ns):
             output.write('{:>6.3f} '.format(float(newline[7+i])))
+        # windows end-of-line \r\n, for linux/mac set \n
         output.write('\r\n')
     # closing input and output files
     output.close()
