@@ -26,3 +26,13 @@ optional arguments:
 - il file impact deve essere nel formato come  "./test/impact_input.csv"
 - il file aermod deve essere nel formato come  "./test/aeremi.dat"
 - la durata delle emissioni è oraria
+
+## FILE DI TEST
+
+Nella cartella test sono presenti alcuni file per i test dei 
+vari formati:
+- aeremi.dat per AERMOD
+- calpuffpolv per CALPUFF
+- impact_input.csv per IMPACT
+- pemspe/pemtim per SPRAY
+- windinput.csv per la meteorologia
