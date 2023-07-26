@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 import logging
 import sys
 import pandas as pd
-import numpy as np
+
 
 
 def pemtim(conf, met):
@@ -291,7 +291,7 @@ def aermod(conf, met):
             if (scheme == 2) | (scheme == 3):
                 newmass = factor._values
             newline = line
-            newline[7] = np.asscalar(newmass)
+            newline[7] = newmass.item(0)
         else:
             newline = line
         output.write(s2w.format(newline[0], newline[1],
@@ -304,7 +304,7 @@ def aermod(conf, met):
         output.write('{:>6.3f} '.format(newline[7]))
         for i in range(1, ns):
             output.write('{:>6.3f} '.format(float(newline[7+i])))
-        output.write('\n')
+        output.write('\r\n')
     # closing input and output files
     output.close()
     file.close()
