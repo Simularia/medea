@@ -12,7 +12,7 @@
 import argparse
 import logging
 from pathlib import Path
-from emifile import pemtim, calpuff, impact
+from emifile import pemtim, calpuff, impact, aermod
 from met import readmet, writemet
 import tomli
 
@@ -111,6 +111,12 @@ def main():
         logger.info("Editing impact file.")
         impact(conf, metout)
         logger.info("Impact file edited.")
+
+    if conf['mode'] == 3:
+        # read and write aermod file
+        logger.info("Editing aermod file.")
+        aermod(conf, metout)
+        logger.info("Aermod file edited.")
 
     logger.info("End of program.")
     return

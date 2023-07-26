@@ -11,6 +11,7 @@ from datetime import datetime, timedelta
 import logging
 import sys
 import pandas as pd
+import numpy as np
 
 
 def pemtim(conf, met):
@@ -246,4 +247,66 @@ def impact(conf, met):
     output = pd.DataFrame(lsout)
     # writing output csv file
     output.to_csv(conf['output'], index=False, sep=";")
+    return
+
+
+def aermod(conf, met):
+    """Modulate emission from existing aermod emissions input."""
+    logger = logging.getLogger()
+    logger.debug('{}'.format(aermod.__doc__))
+
+    # opening the input aermod emissions input
+    with open(conf['input'], 'r') as file:
+        lines = [line.rstrip() for line in file]
+    # opening the output file for writing
+    output = open(conf['output'], 'w')
+
+    # collecting all sources involved in config.toml
+    lsou = []
+    for k in range(0, len(conf['sources'])):
+        lsou.append(conf['sources'][k]['id'])
+
+    s2w = '{:2s} {:8s} {:2d} {:>2d} {:>2d} {:>2d} {:<7s} '
+    ns = len(lines[0].split()) - 7
+
+    for ind in range(0, len(lines)):
+        line = lines[ind].split()
+        sou = str(line[6])
+        if sou in lsou:
+            date = datetime(year=2000 + int(line[2]),
+                            month=int(line[3]),
+                            day=int(line[4]),
+                            hour=(int(line[5]) - 1),
+                            minute=0, second=0)
+            date = date + timedelta(hours=1)
+            metind = met.index[met['date'] ==
+                               date.strftime('%Y-%m-%dT%H:%M:%SZ')]
+            iconfsou = lsou.index(sou)
+            scheme = conf['sources'][iconfsou]['scheme']
+            spe = conf['sources'][iconfsou]['species'][0]
+            factor = met.iloc[metind][str(sou)+'_'+spe]
+            if scheme == 1:
+                oldmass = float(line[7])
+                newmass = oldmass*factor._values
+            if (scheme == 2) | (scheme == 3):
+                newmass = factor._values
+            newline = line
+            newline[7] = np.asscalar(newmass)
+        else:
+            newline = line
+        output.write(s2w.format(newline[0], newline[1],
+                                int(newline[2]),
+                                int(newline[3]),
+                                int(newline[4]),
+                                int(newline[5]),
+                                newline[6]))
+
+        output.write('{:>6.3f} '.format(newline[7]))
+        for i in range(1, ns):
+            output.write('{:>6.3f} '.format(float(newline[7+i])))
+        output.write('\n')
+    # closing input and output files
+    output.close()
+    file.close()
+    logger.debug("Output calpuff file written.")
     return
