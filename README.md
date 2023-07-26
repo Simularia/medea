@@ -23,5 +23,5 @@ optional arguments:
     dei dati di vento: serve sempre almeno la data/ora
 - il pemtim deve essere nel formato tipo quello in "./test/pemtim"
 - il file calpuff deve essere nel formato come "./test/calpuffpolv"
+- il file impact deve essere nel formato come  "./test/impact_input.csv"
 - la durata delle emissioni è oraria
-
