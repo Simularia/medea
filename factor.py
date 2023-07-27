@@ -45,9 +45,8 @@ def odour(met, conf, ind):
         vref = 0.3
         logger.debug("Reference velocity not available from the")
         logger.debug(f"configuration toml file: {vref} default value.")
-
-    tmp = ((met['ws']*(met['z'].pow(beta['val'])) /
-            conf['sources'][ind]['height'])/vref)**gamma
+    rat = met['z']/conf['sources'][ind]['height']
+    tmp = (met['ws']*(rat.pow(beta['val']))/vref)**gamma
     colname = str(conf['sources'][ind]['id']) + '_' + \
         conf['sources'][ind]['species'][0]
     met.insert(len(met.columns), colname, round(tmp, 2))

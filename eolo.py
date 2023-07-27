@@ -41,7 +41,7 @@ def main():
     EOLO main
     """
 
-    desc = "EOLO: compute wind-dependent emissions for spray."
+    desc = "EOLO: compute wind-dependent emissions for dispersion models."
     parser = argparse.ArgumentParser(description=desc)
 
     parser.add_argument('config',
