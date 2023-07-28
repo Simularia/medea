@@ -139,13 +139,13 @@ f_m = 1.6 w_s + 0.43
 - Calcolo della velocità di attrito:
 
   ```math
-  u_1^* = \max(0.4 \dfrac{f_m}{\log \frac{25}{z_0}} 0.2, u^*_{thr})
+  u_1^* = \max \left(0.4 \dfrac{f_m}{\log \frac{25}{z_0}} 0.2, u^*_{thr}\right)
   ```
   ```math
-  u_2^* = \max(0.4 \dfrac{f_m}{\log \frac{25}{z_0}} 0.6, u^*_{thr})
+  u_2^* = \max \left(0.4 \dfrac{f_m}{\log \frac{25}{z_0}} 0.6, u^*_{thr}\right)
   ```
   ```math
-  u_3^* = \max(0.4 \dfrac{f_m}{\log \frac{25}{z_0}} 0.9, u^*_{thr})
+  u_3^* = \max \left(0.4 \dfrac{f_m}{\log \frac{25}{z_0}} 0.9, u^*_{thr}\right)
   ```
 
 dove $z_0$ è la rugosità impostata nel file di configurazione.
