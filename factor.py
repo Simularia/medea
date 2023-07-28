@@ -70,6 +70,11 @@ def scheme2(met, conf, ind):
     conical = all(item in sou.keys() for item in listcon)
     listflat = ['diameter', 'height']
     flat = all(item in sou.keys() for item in listflat)
+
+    if ((pyramid + conical + flat) != 1):
+        logger.info(f"Undefined shape of source {sou['id']}: exit.")
+        sys.exit()
+
     if pyramid:
         width = sou['xmax'] - sou['xmin']
         height = sou['ymax'] - sou['ymin']
