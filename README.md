@@ -178,8 +178,8 @@ e_{r} = 10^9  e_{f} S m_{h}
 ```
 - $e_{r}$ è l'emission rate (o massa oraria emessa) effettivo da mettere nel file di emissione.
 - $e_{f}$ è il fattore emissivo del generico inquinante:
-- se $h/(2*r) > 0.2$, cioè nel caso di cumuli alti, per il pm25, = 1.26E-06, per il pm10, = 7.9E-06, per le pts, = 1.6E-05,
-- se $h/(2*r) <= 0.2$, cioè nel caso di cumuli bassi, per il pm25, = 3.8E-05, per il pm10, = 2.5E-04, per le pts, = 5.1E-04.
+- se $\frac{h}{2*r} > 0.2$, cioè nel caso di cumuli alti, per il pm25, = 1.26E-06, per il pm10, = 7.9E-06, per le pts, = 1.6E-05,
+- se $\frac{h}{2*r} <= 0.2$, cioè nel caso di cumuli bassi, per il pm25, = 3.8E-05, per il pm10, = 2.5E-04, per le pts, = 5.1E-04.
 - $S = \pi r \sqrt(r^2 + h^2)$ è la superficie del cumulo di forma conica, dove $h$ è l'altezza ed $r$ è il raggio.
 - $m_{h}$ sono il numero di movimentazioni orarie del cumulo.
 
