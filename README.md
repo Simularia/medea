@@ -120,9 +120,13 @@ f_m = 1.6 w_s + 0.43
 - La superficie viene calcolata a seconda della forma del cumulo:
 
 1) piramidale
+
   ```math
   S = \dfrac{8}{5} (x_{max}-x_{min}) \sqrt{\left(\dfrac{ (x_{max}-x_{min})}{5}\right)^2 + h^2}  + \dfrac{4}{3}(y_{max}-y_{min}) \sqrt{\left( \dfrac{(y_{max}-y_{min})}{3}\right) ^2 + h^2}
   ```
+  
+  dove $h$ è l'altezza del cumulo, $x_{min},x_{max},y_{min},y_{max}$ sono le dimensione orizzontali del cumulo.
+
 2) conica
   ```math
   S = \pi r \sqrt(r^2 + h^2)
@@ -135,15 +139,16 @@ f_m = 1.6 w_s + 0.43
 - Calcolo della velocità di attrito:
 
   ```math
-  u_1^* = \max(0.4 \dfrac{f_m}{\log \frac{25}{z0}} 0.2, u^*_{thr})
+  u_1^* = \max(0.4 \dfrac{f_m}{\log \frac{25}{z_0}} 0.2, u^*_{thr})
   ```
   ```math
-  u_2^* = \max(0.4 \dfrac{f_m}{\log \frac{25}{z0}} 0.6, u^*_{thr})
+  u_2^* = \max(0.4 \dfrac{f_m}{\log \frac{25}{z_0}} 0.6, u^*_{thr})
   ```
   ```math
-  u_3^* = \max(0.4 \dfrac{f_m}{\log \frac{25}{z0}} 0.9, u^*_{thr})
+  u_3^* = \max(0.4 \dfrac{f_m}{\log \frac{25}{z_0}} 0.9, u^*_{thr})
   ```
 
+dove $z_0$ è la rugosità impostata nel file di configurazione.
 
 - Calcolo del potenziale erosivo:
   ```math
