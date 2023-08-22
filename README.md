@@ -125,7 +125,7 @@ Descrizione dei campi **specifici** per ciascun schema:
   - `vref`: velocità (m/s) di riferimento del fattore emissivo presente nel file di emissione in input (**opzionale**, default = 0.3)
 
 - [schema 2](#schema-2---cumuli-di-polveri-con-luso-dei-dati-di-vento):
-  - `mass`: massa in mcg del cumulo di polveri (**obbligatorio**);
+  - `mass`: massa in mcg del cumulo di polveri (**obbligatorio**): ATTENZIONE, la massa dipende dalla geometria e dal materiale;
   - `tfv`: velocità (m/s) d'attrito di soglia (**obbligatorio**);
   - `roughness`: lunghezza di rugosità (m) (**opzionale**, default = 0.005);
   - geometria della sorgente (**obbligatorio**):
@@ -191,18 +191,18 @@ dove $z_0$ è la rugosità, $u^*_{thr}$ è la velocità d'attrito di soglia, ent
 
 - Calcolo del potenziale erosivo:
 
-$$P_1 = 58 (u_1^* - u^*_{thr})^2 + 25*(u_1^* - u^*_{thr})$$
+$$P_1 = 58 (u_1^* - u^*_{thr})^2 + 25(u_1^* - u^*_{thr})$$
 
-$$P_2 = 58 (u_2^* - u^*_{thr})^2 + 25*(u_2^* - u^*_{thr})$$
+$$P_2 = 58 (u_2^* - u^*_{thr})^2 + 25(u_2^* - u^*_{thr})$$
 
-$$P_3 = 58 (u_3^* - u^*_{thr})^2 + 25*(u_3^* - u^*_{thr})$$
+$$P_3 = 58 (u_3^* - u^*_{thr})^2 + 25(u_3^* - u^*_{thr})$$
 
 
 - Calcolo massa oraria emessa:
 
-$$e_{r} = k \dfrac{40 P_1 + 48 P_2 + 12 P_3}{100} 10^6$$
+$$e_{r} = k S m \dfrac{40 P_1 + 48 P_2 + 12 P_3}{100} 10^6$$
 
-con $k = 0.075$ per il pm25, $k = 0.5$ per il pm10, $k = 1$ per le pts.
+con $k = 0.075$ per il PM25, $k = 0.5$ per il PM10, $k = 1$ per le PTS.
 
 - Riferimento bibliografico: https://www.epa.gov/air-emissions-factors-and-quantification/ap-42-compilation-air-emissions-factors AP-42: Compilation of Air Emissions Factors, Sezione 13.2.5 Industrial Wind Erosion
 
@@ -212,9 +212,9 @@ L'algoritmo secondo la metodologia ARPA Toscana semplificata è sintetizzato dal
 $$e_{r} = 10^9  e_{f} S m_{h}$$
 
 - $e_{r}$ è l'emission rate (o massa oraria emessa) effettivo da mettere nel file di emissione.
-- $e_{f}$ è il fattore emissivo del generico inquinante:
-- se $\dfrac{h}{2r} > 0.2$, cioè nel caso di cumuli alti, per il pm25, $= 1.26 \cdot 10^{-6}$, per il pm10, $= 7.9 \cdot 10^{-6}$, per le pts, $= 1.6 \cdot 10^{-5}$,
-- se $\dfrac{h}{2r} \le 0.2$, cioè nel caso di cumuli bassi, per il pm25, $= 3.8 \cdot 10^{-5}$, per il pm10, $= 2.5 \cdot 10^{-4}$, per le pts, $= 5.1 \cdot 10^{-4}$.
+- $e_{f}$ è il valore di emissione dell' inquinante:
+  1) se $\dfrac{h}{2r} > 0.2$, cioè nel caso di cumuli alti, per il PM25, $= 1.26 \cdot 10^{-6}$, per il PM10, $= 7.9 \cdot 10^{-6}$, per le PTS, $= 1.6 \cdot 10^{-5}$,
+  2) se $\dfrac{h}{2r} \le 0.2$, cioè nel caso di cumuli bassi, per il PM25, $= 3.8 \cdot 10^{-5}$, per il PM10, $= 2.5 \cdot 10^{-4}$, per le PTS, $= 5.1 \cdot 10^{-4}$.
 - $S = \pi r \sqrt(r^2 + h^2)$ è la superficie del cumulo di forma conica, dove $h$ è l'altezza ed $r$ è il raggio.
 - $m_{h}$ sono il numero di movimentazioni orarie del cumulo.
 
