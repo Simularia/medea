@@ -59,7 +59,7 @@ Il file meteorologico, specificato nel file di configurazione toml con il campo 
 date,ws,wd,stabclass,z
 2019-01-01T00:00:00Z,4.32,111,B,10
 ```
-Il parametro wd non è al momento utilizzato, i parametri z e stabclass sono utilizzati soltanto per lo schema 1, il parametro ws non è utilizzato nello schema 3.
+Il parametro wd non è al momento utilizzato, i parametri z (altezza a cui è riferita la velocità del vento) e stabclass (classe di stabilità, con lettere A,B,C,D,E,F oppure numeri 1,2,3,4,5,6) sono utilizzati soltanto per lo schema 1, il parametro ws non è utilizzato nello schema 3.
 
 Nota: il parametro date è sempre necessario. Ulteriori parametri necessari sono specificati nella descrizione degli [schemi](#formule-e-riferimenti).
 
@@ -95,14 +95,14 @@ sources = [
     # forma piramidale (xmin, xmax, ymin, ymax) 
     { id = 2, scheme = 2, species = ["PTS", "PM25", "PM10"], 
       height = 4, xmax = 5, xmin = 2, ymin = 2, ymax = 5, 
-      mass = 2.5E+10, roughness = 0.005, tfv = 0.05},  
+      roughness = 0.005, tfv = 0.05},  
     # forma conica (radius)
     { id = 3, scheme = 2, species = ["PTS", "PM25", "PM10"], 
-      height = 4, radius = 3, mass = 2.5E+10, roughness = 0.005, 
+      height = 4, radius = 3, roughness = 0.005, 
       tfv = 0.05},  
     # forma "piatta" (diameter) 
     { id = 4, scheme = 2, species = ["PTS", "PM25", "PM10"], 
-      height = 4, diameter = 5, mass = 2.5E+10, roughness = 0.005,
+      height = 4, diameter = 5, roughness = 0.005,
       tfv = 0.05},  
 
     ### schema 3 - erosione cumulo di polveri con base dati vento non disponibile
@@ -122,12 +122,11 @@ Descrizione dei campi **obbligatori** descrittivi delle sorgenti **comuni** a tu
 Descrizione dei campi **specifici** per ciascun schema:
 - [schema 1](#schema-1---odori):
   - `terrain`: {"rural", "urban"} tipologia terreno (**opzionale**)
-  - `vref`: velocità (m/s) di riferimento del fattore emissivo presente nel file di emissione in input (**opzionale**, default = 0.3)
+  - `vref`: velocità (m/s) di riferimento del fattore emissivo usato per la stima dell'emissione nel file di input (**opzionale**, default = 0.3)
 
 - [schema 2](#schema-2---cumuli-di-polveri-con-luso-dei-dati-di-vento):
-  - `mass`: massa in mcg del cumulo di polveri (**obbligatorio**): ATTENZIONE, la massa dipende dalla geometria e dal materiale;
   - `tfv`: velocità (m/s) d'attrito di soglia (**obbligatorio**);
-  - `roughness`: lunghezza di rugosità (m) (**opzionale**, default = 0.005);
+  - `roughness`: lunghezza di rugosità (cm) (**opzionale**, default = 0.5);
   - geometria della sorgente (**obbligatorio**):
     - piramide: `xmin`, `xmax`, `ymin`, `ymax`, coordinate (m) orizzontali del cumulo piramidale;
     - conica: `radius`, raggio (m) del cono;
@@ -198,13 +197,15 @@ $$P_2 = 58 (u_2^* - u^*_{thr})^2 + 25(u_2^* - u^*_{thr})$$
 $$P_3 = 58 (u_3^* - u^*_{thr})^2 + 25(u_3^* - u^*_{thr})$$
 
 
-- Calcolo massa oraria emessa:
+- Calcolo massa oraria emessa in mcg:
 
-$$e_{r} = k S m \dfrac{40 P_1 + 48 P_2 + 12 P_3}{100} 10^6$$
+$$e_{r} = k S \dfrac{40 P_1 + 48 P_2 + 12 P_3}{100} 10^6$$
 
 con $k = 0.075$ per il PM25, $k = 0.5$ per il PM10, $k = 1$ per le PTS.
 
-- Riferimento bibliografico: https://www.epa.gov/air-emissions-factors-and-quantification/ap-42-compilation-air-emissions-factors AP-42: Compilation of Air Emissions Factors, Sezione 13.2.5 Industrial Wind Erosion
+- Riferimenti bibliografici: 
+  - https://www.epa.gov/air-emissions-factors-and-quantification/ap-42-compilation-air-emissions-factors AP-42: Compilation of Air Emissions Factors, Sezione 13.2.5 Industrial Wind Erosion
+  - Davis, F. K., and H. Newstein, 1968: The variation of gust factors and mean wind speed with height. J. Appl. Meteor., 7, 372–378
 
 ### Schema 3 - Cumuli polveri senza l'uso dei dati di vento
 L'algoritmo secondo la metodologia ARPA Toscana semplificata è sintetizzato dalla seguente formula:

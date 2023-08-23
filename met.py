@@ -20,6 +20,12 @@ def readmet(conf):
 
     # read input csv meteo file in a pandas dataframe
     met = pd.read_csv(conf['windinputfile'])
+    if 'stabclass' in met.keys():
+        met.replace({'stabclass' : { 1 : 'A', 2 : 'B', 3 : 'C',
+                                     4 : 'D', 5 : 'E', 6 : 'F' ,
+                                    'a' : 'A', 'b' : 'B', 'c' : 'C',
+                                    'd' : 'D', 'e' : 'E', 'f' : 'F' }})
+
     return met
 
 

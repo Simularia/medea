@@ -104,11 +104,11 @@ def scheme2(met, conf, ind):
     b = 0.43
     fm = a*met['ws'] + b
 
-    # roughness
+    # roughness in cm to meters
     if 'roughness' in sou.keys():
-        z0 = sou['roughness']
+        z0 = sou['roughness']/100.0
     else:
-        z0 = 0.005
+        z0 = 0.5
 
     # computing friction velocity
     ust = np.empty((len(fm), len(psba)))
@@ -126,7 +126,7 @@ def scheme2(met, conf, ind):
     k10 = 0.5
     kpts = 1.0
 
-    # building the emission
+    # building the emission in mcg
     ptot = np.sum(p*s*(ppsa/100.0)*10**6., axis=1)
 
     # building species name for met dataframe
@@ -134,9 +134,9 @@ def scheme2(met, conf, ind):
     pm10 = str(sou['id']) + '_' + 'PM10'
     pts = str(sou['id']) + '_' + 'PTS'
 
-    met.insert(len(met.columns), pm25, np.around(k25*ptot*sou['mass'], 2))
-    met.insert(len(met.columns), pm10, np.around(k10*ptot*sou['mass'], 2))
-    met.insert(len(met.columns), pts, np.around(kpts*ptot*sou['mass'], 2))
+    met.insert(len(met.columns), pm25, np.around(k25*ptot, 2))
+    met.insert(len(met.columns), pm10, np.around(k10*ptot, 2))
+    met.insert(len(met.columns), pts, np.around(kpts*ptot, 2))
     return met
 
 

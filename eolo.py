@@ -94,25 +94,26 @@ def main():
     logger.info("Writing meteorological input file and")
     logger.info("computing new emission rescaling factor.")
     metout = writemet(conf, met)
-    if conf['mode'] == 0:
+    mode = conf['mode']
+    if mode == 0 | (mode.lower() == 'spray'):
         # read and write pemtim file
         logger.info("Editing pemtim file.")
         pemtim(conf, metout)
         logger.info("Pemtim file edited.")
 
-    if conf['mode'] == 1:
+    if mode == 1 | (mode.lower() == 'calpuff'):
         # read and write calpuff file
         logger.info("Editing calpuff file.")
         calpuff(conf, metout)
         logger.info("Calpuff file edited.")
 
-    if conf['mode'] == 2:
+    if mode == 2 | (mode.lower() == 'impact'):
         # read and write impact file
         logger.info("Editing impact file.")
         impact(conf, metout)
         logger.info("Impact file edited.")
 
-    if conf['mode'] == 3:
+    if mode == 3 | (mode.lower() == 'aermod'):
         # read and write aermod file
         logger.info("Editing aermod file.")
         aermod(conf, metout)

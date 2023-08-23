@@ -63,12 +63,12 @@ def pemtim(conf, met):
 
     # reading the number of sources
     nsou = int(lines[1].split()[0])
-    logger.debug(f"Number of sources = {nsou}")
+    logger.debug(f"Number of sources = {nsou}.")
 
     ind = 6
     logger.debug("Starting the loop on sources.")
     for isou in range(1, nsou+1):
-        sou = int(lines[ind].split('#')[2])
+        sou = int(lines[ind].split('#')[0])
         output.write(lines[ind]+'\n')
         ind += 1
         nper = int(lines[ind].split('#')[0])
