@@ -76,10 +76,6 @@ def pemtim(conf, met):
         ind += 1
         date = refdate
 
-        iconfsou = lsou.index(sou)
-
-        scheme = conf['sources'][iconfsou]['scheme']
-
         for iper in range(1, nper+1):
             dl = lines[ind].split('#')
             hms = [int(s) for s in dl[2:5]]
@@ -101,6 +97,9 @@ def pemtim(conf, met):
             # read and process all species
             for ispe in range(1, nspe+1):
                 spe = str(lines[ind].split('#')[1]).replace(" ", "")
+                if sou in lsou:
+                    iconfsou = lsou.index(sou)
+                    scheme = conf['sources'][iconfsou]['scheme']
                 if sou in lsou and spe in conf['sources'][iconfsou]['species']:
                     if iper == 1:
                         logger.debug(f"Source {sou} has to be rescaled")
@@ -110,11 +109,11 @@ def pemtim(conf, met):
                         oldmass = float(lines[ind].split('#')[2])
                         newmass = oldmass*factor._values
                     if (scheme == 2) | (scheme == 3):
-                        newmass = factor._values
+                        newmass = 1.0*factor._values
                     dummy = int(lines[ind].split('#')[3])
                     s2w = '{:3d}#{:<8s}#{:6.3E}#{:4d}#\n'
                     output.write(s2w.format(ispe, spe,
-                                            float(newmass.iloc[0]), dummy))
+                                            float(newmass[0]), dummy))
                 else:
                     output.write(lines[ind]+'\n')
                 ind += 1

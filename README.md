@@ -81,7 +81,7 @@ Descrizione delle chiavi di configurazione:
   - 2: impact
   - 3: aermod
 - `pemspe`: stringa del path al file pemspe necessaria soltanto nel caso mode = 0 (spray)
-- `sources`: è un toml inline table, cioè un array delimitato da `[...]`, e ogni elemento è un "dizionario", cioè elementi definiti da `{key1 = val1, key2 = val2, etc...}`,  che descrive una sorgente.
+- `sources`: è un toml inline table, cioè un array delimitato da `[...]`, e ogni elemento è un "dizionario", cioè elementi definiti da `{key1 = val1, key2 = val2, etc...}`, che descrive una sorgente.
 In particolare, la chiave `scheme` definisce l'algoritmo da applicare e a seconda dello schema specificato per la sorgente, i campi del dizionario possono variare.
 
 Un esempio di valori di questo parametro toml è il seguente:

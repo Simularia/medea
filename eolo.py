@@ -19,6 +19,24 @@ import tomli
 __version__ = '0.0.1'
 
 
+def check_mode(input):
+    logger = logging.getLogger()
+    logger.info('{}'.format(check_mode.__doc__))
+    try:
+        # Convert it into integer
+        val = int(input)
+        logger.info(f"mode is an integer number. mode = {val}")
+    except ValueError:
+        try:
+            # Convert it into string
+            val = str(input)
+            val = val.lower()
+            logger.info(f"mode is a string. mode = {val}")
+        except ValueError:
+            logger.info(f"mode is not a string or a number. mode = {val}")
+    return val
+
+
 def readconf(cFile):
     """Read toml configuration file."""
 
@@ -94,26 +112,26 @@ def main():
     logger.info("Writing meteorological input file and")
     logger.info("computing new emission rescaling factor.")
     metout = writemet(conf, met)
-    mode = conf['mode']
-    if mode == 0 | (mode.lower() == 'spray'):
+    mode = check_mode(conf['mode'])
+    if mode == 0 | (mode == 'spray'):
         # read and write pemtim file
         logger.info("Editing pemtim file.")
         pemtim(conf, metout)
         logger.info("Pemtim file edited.")
 
-    if mode == 1 | (mode.lower() == 'calpuff'):
+    if mode == 1 | (mode == 'calpuff'):
         # read and write calpuff file
         logger.info("Editing calpuff file.")
         calpuff(conf, metout)
         logger.info("Calpuff file edited.")
 
-    if mode == 2 | (mode.lower() == 'impact'):
+    if mode == 2 | (mode == 'impact'):
         # read and write impact file
         logger.info("Editing impact file.")
         impact(conf, metout)
         logger.info("Impact file edited.")
 
-    if mode == 3 | (mode.lower() == 'aermod'):
+    if mode == 3 | (mode == 'aermod'):
         # read and write aermod file
         logger.info("Editing aermod file.")
         aermod(conf, metout)
