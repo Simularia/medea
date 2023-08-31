@@ -52,7 +52,17 @@ def odour(met, conf, ind):
     met.insert(len(met.columns), colname, round(tmp, 2))
     return met
 
-
+def sympar(sym, alpha=0.0):
+    if sym:
+        ppsa = np.array([40.0, 48.0, 12.0, 0.0])       
+    elif (not sym) and (alpha>=0.0) and (alpha<=20.0): 
+        ppsa = np.array([36.0, 50.0, 14.0, 0.0])
+    elif (not sym) and (alpha>20.0) and (alpha<=40.0): 
+        ppsa = np.array([31.0, 51.0, 15.0, 3.0])
+    elif (not sym) and (alpha>40.0) and (alpha<=90.0):
+        ppsa = np.array([28.0, 54.0, 14.0, 4.0])
+    return ppsa
+    
 def scheme2(met, conf, ind):
     """Cumulus scheme to set emissions."""
     logger = logging.getLogger()
@@ -62,58 +72,68 @@ def scheme2(met, conf, ind):
         logger.info(f"Invalid species in source {sou['id']}: exit.")
         sys.exit()
 
-    psba = np.array([0.2, 0.6, 0.9])
-    ppsa = np.array([40.0, 48.0, 12.0])
-    listpyr = ['xmax', 'xmin', 'ymax', 'ymin', 'height']
+    listpyr = ['major', 'minor', 'angle', 'height']
     pyramid = all(item in sou.keys() for item in listpyr)
     listcon = ['radius', 'height']
     conical = all(item in sou.keys() for item in listcon)
-    listflat = ['diameter', 'height']
-    flat = all(item in sou.keys() for item in listflat)
 
-    if ((pyramid + conical + flat) != 1):
+    if ((pyramid + conical) != 1):
         logger.info(f"Undefined shape of source {sou['id']}: exit.")
         sys.exit()
 
     if pyramid:
-        width = sou['xmax'] - sou['xmin']
-        height = sou['ymax'] - sou['ymin']
-        ap1 = math.sqrt((width / 5)**2 + sou['height']**2)
-        ap2 = math.sqrt((height / 3)**2 + sou['height']**2)
-        s = 8 * width * ap2 / 5 + 4 * height * ap1 / 3
+        major = sou['major']
+        minor = sou['minor']
+        ap1 = math.sqrt((major / 5)**2 + sou['height']**2)
+        ap2 = math.sqrt((minor / 3)**2 + sou['height']**2)
+        s = 8 * major * ap2 / 5 + 4 * minor * ap1 / 3
+        base = minor # DA RIVEDERE
+        if (abs(sou['angle']) > 90.0):
+            logger.info(f"Bad definition of angle {sou['angle']}: exit.")
+            sys.exit()
+        # computing angle to select EPA case
+        if sou['angle']<0.0:
+            ainc = (met['wd'] - (-90.0 - sou['angle']))
+        else:
+            ainc = (met['wd'] - (90.0 - sou['angle']))
+        alpha = ainc - 90.0*round(ainc/90.0,0)
+        ppsa = sympar(False, alpha)
         logger.debug(f"Source {sou['id']} has pyramid shape.")
 
     elif conical:
         r = sou['radius']
         h = sou['height']
         s = math.pi*r*math.sqrt(r**2 + h**2)
+        base = 2*r
         logger.debug(f"Source {sou['id']} has conical shape.")
-
-    elif flat:
-        d = sou['diameter']
-        h = sou['height']
-        s = (math.pi/4)*d**2
-        logger.debug(f"Source {sou['id']} has flat shape.")
 
     else:
         logger.info(f"Undefined shape of source {sou['id']}: exit.")
         sys.exit()
 
-    # from wind speed to fastest mile
-    a = 1.6
-    b = 0.43
-    fm = a*met['ws'] + b
+    if sou['height']/base <= 0.2:
+        psba = [1, 1, 1, 1]
+    else:
+        psba = [0.2, 0.6, 0.9, 1.1]
 
     # roughness in cm to meters
     if 'roughness' in sou.keys():
         z0 = sou['roughness']/100.0
     else:
-        z0 = 0.5
+        z0 = 0.005
+
+    # scale wind speed to 10 m height
+    ws10 = met['ws']*(np.log(10.0/z0))/(np.log(met['z']/z0))
+
+    # from wind speed to fastest mile
+    a = 1.6
+    b = 0.43
+    fm = a*ws10 + b
 
     # computing friction velocity
     ust = np.empty((len(fm), len(psba)))
     for idx, psbai in enumerate(psba):
-        ust[:, idx] = 0.4*fm/np.log(25/z0)*psbai
+        ust[:, idx] = 0.4*fm/np.log(0.25/z0)*psbai
     tfv = sou['tfv']*np.ones((len(fm), len(psba)))
     ust = np.where(ust > tfv, ust, tfv)
 

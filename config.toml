@@ -10,17 +10,16 @@ sources = [
     { id = 1, scheme = 1, species = ["OU"], height = 5, terrain = "rural", vref = 0.6},
     # erosione cumulo di polveri con base dati vento disponibile 
     # forma piramidale (xmin, xmax, ymin, ymax)
-    { id = 2, scheme = 2, species = ["PTS", "PM25", "PM10"], height = 4, xmax = 5, xmin = 2, ymin = 2, ymax = 5, roughness = 0.3, tfv = 0.05},  
+    { id = 2, scheme = 2, species = ["PTS", "PM25", "PM10"], height = 4, major = 5, minor = 3, angle = 10, roughness = 0.3, tfv = 0.05},  
     # forma conica (radius)
     { id = 3, scheme = 2, species = ["PTS", "PM25", "PM10"], height = 4, radius = 3, roughness = 0.15, tfv = 0.05},  
-    # forma "piatta" (diameter) 
-    { id = 4, scheme = 2, species = ["PTS", "PM25", "PM10"], height = 4, diameter = 5, roughness = 0.15, tfv = 0.05},  
     # erosione cumulo di polveri con base dati vento non disponibile (radius è il raggio equivalente)
     { id = 5, scheme = 3, species = ["PTS", "PM25", "PM10"], height = 4, radius = 3.6, movh = 4} 
 ]
 
 # roughness in centimetri
-# (radius, diameter, xmax, xmin, ymax, ymin, height) in metri
+# (radius, diameter, major, minor, height) in metri
+# (angle) in gradi (-90,+90)
 # movh numero movimentazioni all'ora
 # tfv threshold friction velocity in metri al secondo
 # vref velocità di riferimento per il fattore emissivo odorigeno in metri al secondo

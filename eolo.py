@@ -50,7 +50,6 @@ def readconf(cFile):
     for key in conf.keys():
         logger.debug(f"{key}: {conf[key]}")
     logger.debug("Configuration toml file read correctly.")
-
     return conf
 
 
@@ -109,29 +108,30 @@ def main():
     logger.info("Reading meteorological input file.")
     met = readmet(conf)
     # write meteorological file
-    logger.info("Writing meteorological input file and")
+    logger.info("Writing meteorological output file and")
     logger.info("computing new emission rescaling factor.")
     metout = writemet(conf, met)
     mode = check_mode(conf['mode'])
-    if mode == 0 | (mode == 'spray'):
+
+    if ((mode == 0) | (mode == 'spray')):
         # read and write pemtim file
         logger.info("Editing pemtim file.")
         pemtim(conf, metout)
         logger.info("Pemtim file edited.")
 
-    if mode == 1 | (mode == 'calpuff'):
+    if ((mode == 1) | (mode == 'calpuff')):
         # read and write calpuff file
         logger.info("Editing calpuff file.")
         calpuff(conf, metout)
         logger.info("Calpuff file edited.")
 
-    if mode == 2 | (mode == 'impact'):
+    if ((mode == 2) | (mode == 'impact')):
         # read and write impact file
         logger.info("Editing impact file.")
         impact(conf, metout)
         logger.info("Impact file edited.")
 
-    if mode == 3 | (mode == 'aermod'):
+    if ((mode == 3) | (mode == 'aermod')):
         # read and write aermod file
         logger.info("Editing aermod file.")
         aermod(conf, metout)

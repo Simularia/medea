@@ -75,7 +75,7 @@ Descrizione delle chiavi di configurazione:
 - `windinputfile`: stringa del path al file meteo in input (`="./test/met.csv"`)
 - `windoutputfile`: stringa del path al file meteo e fattori emissione in output 
 (`="./test/metout.csv"`)
-- `mode`: (numero intero) modalità di eolo per la scelta del modello:
+- `mode`: (numero intero o stringa del modello) modalità di eolo per la scelta del modello:
   - 0: spray
   - 1: calpuff
   - 2: impact
@@ -92,21 +92,17 @@ sources = [
       terrain = "rural", vref = 0.6},
 
     ### schema 2 - erosione cumulo di polveri con base dati vento disponibile
-    # forma piramidale (xmin, xmax, ymin, ymax) 
+    # forma piramidale (lati e angolo)
     { id = 2, scheme = 2, species = ["PTS", "PM25", "PM10"], 
-      height = 4, xmax = 5, xmin = 2, ymin = 2, ymax = 5, 
-      roughness = 0.005, tfv = 0.05},  
+      height = 4, major = 5, minor = 3, angle = 15, 
+      roughness = 0.5, tfv = 0.05},  
     # forma conica (radius)
     { id = 3, scheme = 2, species = ["PTS", "PM25", "PM10"], 
       height = 4, radius = 3, roughness = 0.005, 
-      tfv = 0.05},  
-    # forma "piatta" (diameter) 
-    { id = 4, scheme = 2, species = ["PTS", "PM25", "PM10"], 
-      height = 4, diameter = 5, roughness = 0.005,
-      tfv = 0.05},  
+      tfv = 0.05},   
 
     ### schema 3 - erosione cumulo di polveri con base dati vento non disponibile
-    { id = 5, scheme = 3, species = ["PTS", "PM25", "PM10"], 
+    { id = 4, scheme = 3, species = ["PTS", "PM25", "PM10"], 
       height = 4, radius = 3.6, movh = 4} 
 ]
 ```
@@ -117,7 +113,7 @@ Descrizione dei campi **obbligatori** descrittivi delle sorgenti **comuni** a tu
   - 2 = schema per sorgenti cumuli di polveri con base dati di vento disponibile,
   - 3 = schema per sorgenti cumuli di polveri con base dati di vento non disponibile;
 - `species`: array di stringhe identificative delle specie trattate;
-- `height`: altezza della sorgente in metri.
+- `height`: altezza del cumulo in metri.
 
 Descrizione dei campi **specifici** per ciascun schema:
 - [schema 1](#schema-1---odori):
@@ -128,9 +124,8 @@ Descrizione dei campi **specifici** per ciascun schema:
   - `tfv`: velocità (m/s) d'attrito di soglia (**obbligatorio**);
   - `roughness`: lunghezza di rugosità (cm) (**opzionale**, default = 0.5);
   - geometria della sorgente (**obbligatorio**):
-    - piramide: `xmin`, `xmax`, `ymin`, `ymax`, coordinate (m) orizzontali del cumulo piramidale;
-    - conica: `radius`, raggio (m) del cono;
-    - piatto: `diameter`, diametro (m) del cumulo piatto.
+    - piramide: `major`, `minor`, `angle`, lati del rettangolo alla base (m) e angolo del lato lungo rispetto all'asse x (senso antiorario, range -90°,+90°);
+    - conica: `radius`, raggio (m) del cono.
 
 - [schema 3](#schema-3---cumuli-polveri-senza-luso-dei-dati-di-vento):
   - `radius`: raggio (m) equivalente del cumulo (**obbligatorio**);
@@ -158,6 +153,10 @@ dove $w_s$ è la wind speed, $\gamma = 0.5$, $z$ (m) è la quota a cui è riferi
 ### Schema 2 - Cumuli di polveri con l'uso dei dati di vento
 Algoritmo di calcolo secondo la metodologia EPA AP-42 è il seguente:
 
+- Calcolo del vento a 10 metri (1000 cm):
+  $$ w_s = w_s(z)\dfrac{\log(1000/z_0)}{\log(z/z_0)} $$
+  dove $z_0$ è la lunghezza di rugosità in cm e $z$ è la quota a cui sono riferiti i dati di vento.
+
 - Calcolo del fastest mile a partire dalla wind speed:
 $$f_m = 1.6 w_s + 0.43$$
 
@@ -168,15 +167,12 @@ $$f_m = 1.6 w_s + 0.43$$
   
   $$S = \dfrac{8}{5} (x_{max}-x_{min}) \sqrt{\left(\dfrac{ (x_{max}-x_{min})}{5}\right)^2 + h^2}  + \dfrac{4}{3}(y_{max}-y_{min}) \sqrt{\left( \dfrac{(y_{max}-y_{min})}{3}\right) ^2 + h^2}$$
   
-  dove $h$ è l'altezza del cumulo, $x_{min},x_{max},y_{min},y_{max}$ sono le dimensione orizzontali del cumulo.
+  dove $h$ è l'altezza del cumulo, $l_{major}, l_{minor}$ sono le dimensioni orizzontali del cumulo.
 
   2) sorgente conica
   
   $$S = \pi r \sqrt(r^2 + h^2)$$
 
-  3) sorgente piatta
-  
-  $$S = \dfrac{\pi}{4} d^2 $$
 
 - Calcolo della velocità di attrito:
 
@@ -186,20 +182,36 @@ $$f_m = 1.6 w_s + 0.43$$
   
   $$u_3^* = \max \left(0.4 \dfrac{f_m}{\log \frac{25}{z_0}} 0.9, u^*_{thr}\right)$$
 
-dove $z_0$ è la rugosità, $u^*_{thr}$ è la velocità d'attrito di soglia, entrambe impostate nel file di configurazione.
+  $$u_4^* = \max \left(0.4 \dfrac{f_m}{\log \frac{25}{z_0}} 1.1, u^*_{thr}\right)$$
+
+  $$u_5^* = \max \left(0.4 \dfrac{f_m}{\log \frac{25}{z_0}}, u^*_{thr}\right)$$
+
+dove $z_0$ è la rugosità (in cm), $u^*_{thr}$ è la velocità d'attrito di soglia, entrambe impostate nel file di configurazione.
 
 - Calcolo del potenziale erosivo:
 
-$$P_1 = 58 (u_1^* - u^*_{thr})^2 + 25(u_1^* - u^*_{thr})$$
+$$P_i = 58 (u_i^* - u^*_{thr})^2 + 25(u_i^* - u^*_{thr}), i = 1,2,3,4,5$$
 
-$$P_2 = 58 (u_2^* - u^*_{thr})^2 + 25(u_2^* - u^*_{thr})$$
-
-$$P_3 = 58 (u_3^* - u^*_{thr})^2 + 25(u_3^* - u^*_{thr})$$
 
 
 - Calcolo massa oraria emessa in mcg:
 
-$$e_{r} = k S \dfrac{40 P_1 + 48 P_2 + 12 P_3}{100} 10^6$$
+  a) se $\dfrac{h}{base} \le 0.2$:
+  $$e_{r} = k S P_5  10^6$$
+
+  b) se $\dfrac{h}{base} > 0.2$:
+
+    1) se la forma del cumulo è simmetrica (conica)
+
+    $$e_{r} = k S \dfrac{40 P_1 + 48 P_2 + 12 P_3 + 0P_4}{100} 10^6$$
+
+    2) se la forma del cumulo è asimmetrica con vento incidente tra [0°,20°]:
+
+    $$e_{r} = k S \dfrac{36 P_1 + 50 P_2 + 14 P_3 + 0P_4}{100} 10^6$$
+    3) se la forma del cumulo è asimmetrica con vento incidente tra (20°,40°]:
+    $$e_{r} = k S \dfrac{31 P_1 + 51 P_2 + 15 P_3 + 3P_4}{100} 10^6$$
+    4) se la forma del cumulo è asimmetrica con vento incidente tra (40°,90°]:
+    $$e_{r} = k S \dfrac{28 P_1 + 54 P_2 + 14 P_3 + 4P_4}{100} 10^6$$
 
 con $k = 0.075$ per il PM25, $k = 0.5$ per il PM10, $k = 1$ per le PTS.
 
