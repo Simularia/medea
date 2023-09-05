@@ -54,11 +54,12 @@ vari formati:
 
 ## FILE METEOROLOGICO IN INPUT
 
-Il file meteorologico, specificato nel file di configurazione toml con il campo `windinputfile`, deve essere di tipo .csv con la data nel seguente formato:
+Il file meteorologico, specificato nel file di configurazione toml con il campo `windinputfile`, può essere di tipo .csv con la data nel seguente formato,
 ```
 date,ws,wd,stabclass,z
 2019-01-01T00:00:00Z,4.32,111,B,10
 ```
+oppure nel formato "postbin": in quest'ultimo caso dovrà essere specificato il parametro `mettype` nel file di configurazione.
 Il parametro wd non è al momento utilizzato, i parametri z (altezza a cui è riferita la velocità del vento) e stabclass (classe di stabilità, con lettere A,B,C,D,E,F oppure numeri 1,2,3,4,5,6) sono utilizzati soltanto per lo schema 1, il parametro ws non è utilizzato nello schema 3.
 
 Nota: il parametro date è sempre necessario. Ulteriori parametri necessari sono specificati nella descrizione degli [schemi](#formule-e-riferimenti).
@@ -72,7 +73,11 @@ Descrizione delle chiavi di configurazione:
 
 - `input`: stringa del path al file di emissione in input (`="./test/pemtim"`)
 - `output`: stringa del path al file di emissione in output (`="./test/pemtimout"`)
-- `windinputfile`: stringa del path al file meteo in input (`="./test/met.csv"`)
+- `windinputfile`: stringa del path al file meteo in input (`="./test/met.csv"` o `="postbin.dat`)
+- `mettype`: stringa che indica il tipo di file meteorologico da leggere:
+  - = 'postbin' : legge un file di tipo postbin.
+  - = 'csv' : legge un file di tipo .csv.
+  - di default tenta di leggere un file di tipo .csv.
 - `windoutputfile`: stringa del path al file meteo e fattori emissione in output 
 (`="./test/metout.csv"`)
 - `mode`: (numero intero o stringa del modello) modalità di eolo per la scelta del modello:

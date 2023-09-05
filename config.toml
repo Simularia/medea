@@ -2,6 +2,7 @@ input = "./test/pemtim"
 output = "./test/pemtimout"
 # pemspe serve soltanto nella modalità spray (mode = 0)
 pemspe = "./test/pemspe" 
+# mettype = 'postbin'
 windinputfile = "./test/windinput.csv"
 windoutputfile = "./test/windoutput.csv"
 mode = 0 # 0 = spray, 1 = calpuff, 2 = impact, 3 = aermod

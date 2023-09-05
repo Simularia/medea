@@ -52,17 +52,37 @@ def odour(met, conf, ind):
     met.insert(len(met.columns), colname, round(tmp, 2))
     return met
 
-def sympar(sym, alpha=0.0):
+def sympar(sym, alpha):
     if sym:
         ppsa = np.array([40.0, 48.0, 12.0, 0.0])       
-    elif (not sym) and (alpha>=0.0) and (alpha<=20.0): 
-        ppsa = np.array([36.0, 50.0, 14.0, 0.0])
-    elif (not sym) and (alpha>20.0) and (alpha<=40.0): 
-        ppsa = np.array([31.0, 51.0, 15.0, 3.0])
-    elif (not sym) and (alpha>40.0) and (alpha<=90.0):
-        ppsa = np.array([28.0, 54.0, 14.0, 4.0])
+    if (not sym):
+        ppsa = np.empty((len(alpha), 4), dtype=float)
+        for ind in range(0, len(alpha)):
+            val = alpha[ind]
+            if (val>=0.0) and (val<=20.0):
+                ppsa[ind, :] = np.array([36.0, 50.0, 14.0, 0.0])
+            if (val>20.0) and (val<=40.0):
+                ppsa[ind, :] = np.array([31.0, 51.0, 15.0, 3.0])
+            if (val>40.0) and (val<=90.0):
+                ppsa[ind, :] = np.array([28.0, 54.0, 14.0, 4.0])
     return ppsa
     
+def inc2alpha(input):
+
+    if input>360.0:
+        input = input - 360.0
+    if input<0.0:
+        input = input + 360.0
+    if input>=270.0:
+        alpha = input - 270.0
+    if input<270.0 and input>180:
+        alpha = 270 - input
+    if input<=180.0 and input>90:
+        alpha = input - 90.0
+    if input<90.0:
+        alpha = 90.0 - input
+    return alpha
+
 def scheme2(met, conf, ind):
     """Cumulus scheme to set emissions."""
     logger = logging.getLogger()
@@ -96,8 +116,9 @@ def scheme2(met, conf, ind):
             ainc = (met['wd'] - (-90.0 - sou['angle']))
         else:
             ainc = (met['wd'] - (90.0 - sou['angle']))
-        alpha = ainc - 90.0*round(ainc/90.0,0)
-        ppsa = sympar(False, alpha)
+
+        alpha = ainc.apply(inc2alpha)
+        ppsa = sympar(False, alpha.to_numpy())
         logger.debug(f"Source {sou['id']} has pyramid shape.")
 
     elif conical:
@@ -105,6 +126,8 @@ def scheme2(met, conf, ind):
         h = sou['height']
         s = math.pi*r*math.sqrt(r**2 + h**2)
         base = 2*r
+        ppsa = sympar(True, 1.0)
+        ppsa = np.repeat(a = ppsa, repeats = len(met['ws']), axis=0)
         logger.debug(f"Source {sou['id']} has conical shape.")
 
     else:
@@ -147,7 +170,9 @@ def scheme2(met, conf, ind):
     kpts = 1.0
 
     # building the emission in mcg
-    ptot = np.sum(p*s*(ppsa/100.0)*10**6., axis=1)
+    ptot = np.zeros(len(p[:,0]), float)
+    for ind in range(0, len(p)):
+        ptot[ind] = np.dot(p[ind, :],ppsa[ind, :])*(s/100.0)*10**6.
 
     # building species name for met dataframe
     pm25 = str(sou['id']) + '_' + 'PM25'
