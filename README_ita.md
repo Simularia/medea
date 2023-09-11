@@ -241,5 +241,5 @@ $$e_{r} = 10^9  e_{f} S m_{h}$$
 ## Generazione del README.pdf
 Per generare il documento pdf di questo manuale, digitare sul terminale il seguente comando:
 ```{sh}
-$ pandoc --to=pdf README.md -V geometry:margin=25mm -o README.pdf
+$ pandoc --to=pdf README_ita.md -V geometry:margin=25mm -o README_ita.pdf
 ```
