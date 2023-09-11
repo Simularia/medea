@@ -3,8 +3,8 @@ output = "./test/pemtimout"
 # pemspe only needed in spray mode (mode = 0)
 pemspe = "./test/pemspe" 
 # mettype = 'postbin'
-windinputfile = "./test/windinput.csv"
-windoutputfile = "./test/windoutput.csv"
+windInputFile = "./test/windinput.csv"
+windOutpuFfile = "./test/windoutput.csv"
 mode = 0 # 0 = spray, 1 = calpuff, 2 = impact, 3 = aermod
 sources = [
     # odour source
@@ -17,15 +17,16 @@ sources = [
     # wind erosion with no available wind data
     { id = 5, scheme = 3, species = ["PTS", "PM25", "PM10"], height = 4, radius = 3.6, movh = 4},
 
-    # example of compact description of multiple sources with same characteristics (works with each possible scheme)
+    # examples of compact description of multiple sources with same characteristics (it works with each possible scheme)
     { id = [1, 'source1', 'source 2'], scheme = 3, species = ["PTS", "PM25", "PM10"], height = 4, radius = 3.6, movh = 4},
+    { id = [1, 22, 333], scheme = 3, species = ["PTS", "PM25", "PM10"], height = 4, radius = 3.6, movh = 4}
 ]
 
 # roughness in cm
 # (radius, diameter, major, minor, height) in meters
 # (angle) in gradi (-90,+90)
 # movh hourly movement number
-# tfv threshold friction velocity in metri al secondo
+# tfv threshold friction velocity in m/s
 # vref reference velocity for odour emission factor (m/s)
 # terrain = "rural" o "urban"
 

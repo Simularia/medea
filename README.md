@@ -43,7 +43,7 @@ In the `./test/` folder some input files are provided as examples in all four fo
 - `windinput.csv` and `postbin.dat` for meteorology.
 
 ## Meteorological input file
-The meteorological file, specified in the toml configuration file with the field `windinputfile`, can be in the form '.csv' with datetime in the following format:
+The meteorological file, specified in the toml configuration file with the field `windInputFile`, can be in the form '.csv' with datetime in the following format:
 ```
 date,ws,wd,stabclass,z
 2019-01-01T00:00:00Z,4.32,111,B,10
@@ -55,7 +55,7 @@ Note: date parameter is always necessary. Further necessary parameters are speci
 
 ## Meteorological output file
 
-Output meteorological file, specified in the toml configuration file with the key `windoutputfile`, will be in the '.csv' format and it will contain all input information and all the computed emission factor or emission values (according to the selected scheme), for all specified sources and species defined in the same configuration file.
+Output meteorological file, specified in the toml configuration file with the key `windOutputFile`, will be in the '.csv' format and it will contain all input information and all the computed emission factor or emission values (according to the selected scheme), for all specified sources and species defined in the same configuration file.
 
 ## Configuration file
 The configuration file is in the toml format (see https://toml.io/en/): an example of this file is `config.toml`.
@@ -63,12 +63,12 @@ The keys of this toml file are described in the following:
 
 - `input`: string containing the path to the input emission file (`="./test/pemtim"`)
 - `output`: string containing the path to the output emission file (`="./test/pemtimout"`)
-- `windinputfile`: string containing the path to the input meteo file (`="./test/met.csv"` or `="postbin.dat`)
+- `windInputFile`: string containing the path to the input meteo file (`="./test/met.csv"` or `="postbin.dat`)
 - `mettype`: string containing the type of the input meteo file:
   - = 'postbin' : it tries to read a postbin file.
   - = 'csv' : it tries to read a .csv file.
   - by default (by omitting the field or filling it with an invalid value) it tries to read a .csv file.
-- `windoutputfile`: string containing the path to the input meteo file and emission information of each source and species  (`="./test/metout.csv"`)
+- `windOutputFile`: string containing the path to the input meteo file and emission information of each source and species  (`="./test/metout.csv"`)
 - `mode`: (integer number or string) eolo mode for the model choice:
   - 0: spray
   - 1: calpuff
@@ -124,6 +124,7 @@ Description of **specific** keys for each scheme:
   - `radius`: equivalent cumulus radius (m) (**mandatory**);
   - `movh`: hourly movement of cumulus number (**mandatory**).
 
+**Note**: geometrical information in the config.toml will not substitute those present in the emission file and no compatibility control is performed between the two file.
 ## Employed formulas and bibliographical references
 
 ### Scheme 1 - Odour
@@ -212,7 +213,7 @@ The algorithm proposed in the simplified methodology of ARPA Toscana is summariz
 
 $$e_{r} = 10^9  e_{f} S m_{h}$$
 
-- $e_{r}$ is the emission rate (or hourly emitted pollutant mass) that will go in the output emission file.
+- $e_{r}$ is the emission rate (in mcg) (or hourly emitted pollutant mass) that will go in the output emission file.
 - $e_{f}$ is the pollutant emitted value:
   1) if $\dfrac{h}{2r} > 0.2$, that is the high cumulus case, for the PM25, $= 1.26 \cdot 10^{-6}$, for the PM10, $= 7.9 \cdot 10^{-6}$, for the PTS, $= 1.6 \cdot 10^{-5}$,
   2) se $\dfrac{h}{2r} \le 0.2$, that is the low cumulus case, for the PM25, $= 3.8 \cdot 10^{-5}$, for the PM10, $= 2.5 \cdot 10^{-4}$, for the PTS, $= 5.1 \cdot 10^{-4}$.
@@ -224,5 +225,5 @@ $$e_{r} = 10^9  e_{f} S m_{h}$$
 ## Generate PDF manual starting from this readme
 To generate the pdf manual, one can simply type this command on the terminal:
 ```{sh}
-$ pandoc --to=pdf README_eng.md -V geometry:margin=25mm -o README_eng.pdf
+$ pandoc --to=pdf README.md -V geometry:margin=25mm -o README.pdf
 ```

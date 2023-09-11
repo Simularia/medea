@@ -107,7 +107,7 @@ def scheme2(met, conf, ind):
         ap1 = math.sqrt((major / 5)**2 + sou['height']**2)
         ap2 = math.sqrt((minor / 3)**2 + sou['height']**2)
         s = 8 * major * ap2 / 5 + 4 * minor * ap1 / 3
-        base = minor # DA RIVEDERE
+        base = minor
         if (abs(sou['angle']) > 90.0):
             logger.info(f"Bad definition of angle {sou['angle']}: exit.")
             sys.exit()

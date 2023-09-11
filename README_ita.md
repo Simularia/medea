@@ -54,7 +54,7 @@ vari formati:
 
 ## FILE METEOROLOGICO IN INPUT
 
-Il file meteorologico, specificato nel file di configurazione toml con il campo `windinputfile`, può essere di tipo .csv con la data nel seguente formato,
+Il file meteorologico, specificato nel file di configurazione toml con il campo `windInputFile`, può essere di tipo .csv con la data nel seguente formato,
 ```
 date,ws,wd,stabclass,z
 2019-01-01T00:00:00Z,4.32,111,B,10
@@ -66,19 +66,19 @@ Nota: il parametro date è sempre necessario. Ulteriori parametri necessari sono
 
 ## FILE METEOROLOGICO IN OUTPUT
 
-Il file meteorologico in output, specificato nel file di configurazione toml con il campo `windoutputfile`, sarà di tipo .csv e contiene tutte le informazioni di input più i fattori moltiplicativi o masse (in funzione dello schema applicato), per tutte le sorgenti e specie definite nel file di configurazione.
+Il file meteorologico in output, specificato nel file di configurazione toml con il campo `windOutputFile`, sarà di tipo .csv e contiene tutte le informazioni di input più i fattori moltiplicativi o masse (in funzione dello schema applicato), per tutte le sorgenti e specie definite nel file di configurazione.
 
 ## FILE DI CONFIGURAZIONE
 Descrizione delle chiavi di configurazione:
 
 - `input`: stringa del path al file di emissione in input (`="./test/pemtim"`)
 - `output`: stringa del path al file di emissione in output (`="./test/pemtimout"`)
-- `windinputfile`: stringa del path al file meteo in input (`="./test/met.csv"` o `="postbin.dat`)
+- `windInputFile`: stringa del path al file meteo in input (`="./test/met.csv"` o `="postbin.dat`)
 - `mettype`: stringa che indica il tipo di file meteorologico da leggere:
   - = 'postbin' : legge un file di tipo postbin.
   - = 'csv' : legge un file di tipo .csv.
   - di default tenta di leggere un file di tipo .csv.
-- `windoutputfile`: stringa del path al file meteo e fattori emissione in output 
+- `windOutputFile`: stringa del path al file meteo e fattori emissione in output 
 (`="./test/metout.csv"`)
 - `mode`: (numero intero o stringa del modello) modalità di eolo per la scelta del modello:
   - 0: spray
@@ -135,6 +135,8 @@ Descrizione dei campi **specifici** per ciascun schema:
 - [schema 3](#schema-3---cumuli-polveri-senza-luso-dei-dati-di-vento):
   - `radius`: raggio (m) equivalente del cumulo (**obbligatorio**);
   - `movh`: numero di movimentazioni orarie del cumulo (**obbligatorio**).
+
+**Nota**: le informazioni geometriche presenti nel config.toml non sostituiranno quelle presenti nel file di emissione e tra le due non viene eseguito alcun tipo di controllo di compatibilità.
 
 ## FORMULE E RIFERIMENTI
 
@@ -229,7 +231,7 @@ L'algoritmo secondo la metodologia ARPA Toscana semplificata è sintetizzato dal
 
 $$e_{r} = 10^9  e_{f} S m_{h}$$
 
-- $e_{r}$ è l'emission rate (o massa oraria emessa) effettivo da mettere nel file di emissione.
+- $e_{r}$ è l'emission rate (in mcg) (o massa oraria emessa) effettivo da mettere nel file di emissione.
 - $e_{f}$ è il valore di emissione dell' inquinante:
   1) se $\dfrac{h}{2r} > 0.2$, cioè nel caso di cumuli alti, per il PM25, $= 1.26 \cdot 10^{-6}$, per il PM10, $= 7.9 \cdot 10^{-6}$, per le PTS, $= 1.6 \cdot 10^{-5}$,
   2) se $\dfrac{h}{2r} \le 0.2$, cioè nel caso di cumuli bassi, per il PM25, $= 3.8 \cdot 10^{-5}$, per il PM10, $= 2.5 \cdot 10^{-4}$, per le PTS, $= 5.1 \cdot 10^{-4}$.

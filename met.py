@@ -28,7 +28,7 @@ def readmet(conf):
         mettype = 'csv'
 
     if mettype == 'postbin':
-        with open(conf['windinputfile'], 'r') as file:
+        with open(conf['windInputFile'], 'r') as file:
                 lines = [line.rstrip() for line in file]
         metdata = [['none', -1.0, -1.0, -1.0] for x in range(len(lines))]
         for ind in range(0, len(lines)):
@@ -79,5 +79,5 @@ def writemet(conf, met):
 
     # write the output csv meteo and factor file
     logger.debug("Writing the output csv meteo and factor file.")
-    met.to_csv(conf['windoutputfile'], index=False)
+    met.to_csv(conf['windOutputFile'], index=False)
     return met
