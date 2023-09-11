@@ -170,7 +170,7 @@ $$f_m = 1.6 w_s + 0.43$$
 
   1) sorgente piramidale
   
-  $$S = \dfrac{8}{5} (x_{max}-x_{min}) \sqrt{\left(\dfrac{ (x_{max}-x_{min})}{5}\right)^2 + h^2}  + \dfrac{4}{3}(y_{max}-y_{min}) \sqrt{\left( \dfrac{(y_{max}-y_{min})}{3}\right) ^2 + h^2}$$
+  $$S = \dfrac{8}{5} l_{major} \sqrt{\left(\dfrac{ l_{major}}{5}\right)^2 + h^2}  + \dfrac{4}{3}l_{minor} \sqrt{\left( \dfrac{l_{minor}}{3}\right) ^2 + h^2}$$
   
   dove $h$ è l'altezza del cumulo, $l_{major}, l_{minor}$ sono le dimensioni orizzontali del cumulo.
 
