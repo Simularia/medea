@@ -112,7 +112,7 @@ sources = [
 ]
 ```
 Descrizione dei campi **obbligatori** descrittivi delle sorgenti **comuni** a tutti i vari schemi:
-- `id`: stringa identificativa della sorgente nei file di emissione in input;
+- `id`: stringa o numero identificativa della sorgente nei file di emissione in input (puà essere anche una lista, come ad esempio: [1, 'source1', 'source 2']);
 - `scheme`: = {1,2,3} numero intero che identifica lo [schema](#formule-e-riferimenti):
   - 1 = schema per sorgenti odorigene,
   - 2 = schema per sorgenti cumuli di polveri con base dati di vento disponibile,

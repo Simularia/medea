@@ -100,7 +100,7 @@ sources = [
 ]
 ```
 Details on the **mandatory** and **common** keys that are common to all scheme:
-- `id`: identifier string or number in the input emission file;
+- `id`: identifier string or number in the input emission file (it can also be a list, e.g. [1, 'source1', 'source 2']);
 - `scheme`: = {1,2,3} integer number that identifies the [scheme](#employed-formulas-and-bibliographical-references)
   - 1 = scheme for odour sources,
   - 2 = scheme for dust cumulus with available wind data,

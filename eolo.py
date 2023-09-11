@@ -49,6 +49,23 @@ def readconf(cFile):
     logger.debug("Configuration toml file dump:")
     for key in conf.keys():
         logger.debug(f"{key}: {conf[key]}")
+    newsou = []
+    for i, sou in enumerate(conf['sources']):
+        if isinstance(sou['id'], list):
+            ids = conf['sources'][i]['id']
+            tmpsou = []
+            for j in range(len(ids)):
+                tmpsou.append(sou.copy())
+            for k, id in enumerate(ids):
+                tmpsou[k]['id'] = id
+            newsou = newsou + tmpsou
+    oldsou = []
+    for i, sou in enumerate(conf['sources']):
+        if not isinstance(sou['id'], list):
+            oldsou.append(conf['sources'][i])
+    conf['sources'] = []
+    conf['sources'] = oldsou + newsou
+    print(conf['sources'])
     logger.debug("Configuration toml file read correctly.")
     return conf
 

@@ -1,29 +1,32 @@
 input = "./test/pemtim"
 output = "./test/pemtimout"
-# pemspe serve soltanto nella modalità spray (mode = 0)
+# pemspe only needed in spray mode (mode = 0)
 pemspe = "./test/pemspe" 
 # mettype = 'postbin'
 windinputfile = "./test/windinput.csv"
 windoutputfile = "./test/windoutput.csv"
 mode = 0 # 0 = spray, 1 = calpuff, 2 = impact, 3 = aermod
 sources = [
-    # sorgente odorigena
+    # odour source
     { id = 1, scheme = 1, species = ["OU"], height = 5, terrain = "rural", vref = 0.6},
-    # erosione cumulo di polveri con base dati vento disponibile 
-    # forma piramidale (xmin, xmax, ymin, ymax)
+    # wind erosion with available wind data
+    # pyramid shape
     { id = 2, scheme = 2, species = ["PTS", "PM25", "PM10"], height = 4, major = 5, minor = 3, angle = 10, roughness = 0.3, tfv = 0.05},  
-    # forma conica (radius)
+    # conical shape
     { id = 3, scheme = 2, species = ["PTS", "PM25", "PM10"], height = 4, radius = 3, roughness = 0.15, tfv = 0.05},  
-    # erosione cumulo di polveri con base dati vento non disponibile (radius è il raggio equivalente)
-    { id = 5, scheme = 3, species = ["PTS", "PM25", "PM10"], height = 4, radius = 3.6, movh = 4} 
+    # wind erosion with no available wind data
+    { id = 5, scheme = 3, species = ["PTS", "PM25", "PM10"], height = 4, radius = 3.6, movh = 4},
+
+    # example of compact description of multiple sources with same characteristics (works with each possible scheme)
+    { id = [1, 'source1', 'source 2'], scheme = 3, species = ["PTS", "PM25", "PM10"], height = 4, radius = 3.6, movh = 4},
 ]
 
-# roughness in centimetri
-# (radius, diameter, major, minor, height) in metri
+# roughness in cm
+# (radius, diameter, major, minor, height) in meters
 # (angle) in gradi (-90,+90)
-# movh numero movimentazioni all'ora
+# movh hourly movement number
 # tfv threshold friction velocity in metri al secondo
-# vref velocità di riferimento per il fattore emissivo odorigeno in metri al secondo
+# vref reference velocity for odour emission factor (m/s)
 # terrain = "rural" o "urban"
 
 
