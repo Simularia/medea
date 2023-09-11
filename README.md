@@ -99,7 +99,7 @@ sources = [
       height = 4, radius = 3.6, movh = 4} 
 ]
 ```
-Details on the **mandatory** and **common** keys that are common to all scheme:
+Details on the **mandatory** keys that are **common** to all the schemes:
 - `id`: identifier string or number in the input emission file (it can also be a list, e.g. [1, 'source1', 'source 2']);
 - `scheme`: = {1,2,3} integer number that identifies the [scheme](#employed-formulas-and-bibliographical-references)
   - 1 = scheme for odour sources,

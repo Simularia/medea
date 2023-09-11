@@ -78,7 +78,7 @@ Descrizione delle chiavi di configurazione:
   - = 'postbin' : legge un file di tipo postbin.
   - = 'csv' : legge un file di tipo .csv.
   - di default tenta di leggere un file di tipo .csv.
-- `windOutputFile`: stringa del path al file meteo e fattori emissione in output 
+- `windOutputFile`: stringa del path al file meteo e fattori emissione in output
 (`="./test/metout.csv"`)
 - `mode`: (numero intero o stringa del modello) modalità di eolo per la scelta del modello:
   - 0: spray
@@ -111,7 +111,7 @@ sources = [
       height = 4, radius = 3.6, movh = 4} 
 ]
 ```
-Descrizione dei campi **obbligatori** descrittivi delle sorgenti **comuni** a tutti i vari schemi:
+Descrizione dei campi **obbligatori** descrittivi delle sorgenti, **comuni** a tutti i vari schemi:
 - `id`: stringa o numero identificativa della sorgente nei file di emissione in input (puà essere anche una lista, come ad esempio: [1, 'source1', 'source 2']);
 - `scheme`: = {1,2,3} numero intero che identifica lo [schema](#formule-e-riferimenti):
   - 1 = schema per sorgenti odorigene,
