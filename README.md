@@ -1,14 +1,24 @@
-# EOLO Documentation
+# EOLO
+
+## Introduction
+
+Use `eolo` to compute wind dependent emission input files for many atmospheric dispersion models. 
+The tool works with different models, such as CALPUFF, AERMOD, ARIA-IMPACT and SPRAY. Emissions are computed according to different schemes suitable for odour and air quality modelling.
+
+See [below](#algorithms-and-bibliographical-references) for a description of the relevant algorithms and for the bibliographical references.
+
 
 ## How to use eolo
-First of all, some python packages are required: these can be installed via a virtual environment as following:
+
+In order to run `eolo`, some python packages are required. These can be installed via a virtual environment as in the following:
+
 ```{sh}
 $ virtualenv venv
 $ source venv/bin/activate
 (venv) $ pip install -r requirements.txt
 ```
-After that one can use it:
 
+The included help, shows how to use the tool:
 ```{sh}
 (venv) $ ./eolo.py -h
 usage: eolo.py [-h] [-d] config
@@ -23,59 +33,26 @@ optional arguments:
   -d, --debug  Activate debug mode
 ```
 
-## Hypothesis
-
-- The meteorological input file is required in all possible eolo use configuration, at least it must contain the datetime of each deadline for emission:
-- In the SPRAY case, pemtim and pemspe input files must be provided in the format specified in "./test/pemtim" and "./test/pemspe";
-- In the CALPUFF case, calpuff input file must be provided in the format specified in "./test/calpuffpolv";
-- In the IMPACT case, impact input file must be provided in the format specified in "./test/impact_input.csv";
-- In the AERMOD case, aermod input file must be provided in the format specified in "./test/aeremi.dat";
-- The emission duration of must be hourly.
-
-## Test files
-
-In the `./test/` folder some input files are provided as examples in all four formats and for meteorology:
-
-- `aeremi.dat` for AERMOD;
-- `calpuffpolv` for CALPUFF;
-- `impact_input.csv` for IMPACT;
-- `pemspe` and `pemtim` for SPRAY;
-- `windinput.csv` and `postbin.dat` for meteorology.
-
-## Meteorological input file
-The meteorological file, specified in the toml configuration file with the field `windInputFile`, can be in the form '.csv' with datetime in the following format:
-```
-date,ws,wd,stabclass,z
-2019-01-01T00:00:00Z,4.32,111,B,10
-```
-or in the 'postbin' format: in the latter case, the field `mettype` has to be filled up with the string `postbin` in the toml configuration file.
-The z (wind field sensor height) and stabclass (stability class, specified with letters A,B,C,D,E,F or numbers 1,2,3,4,5,6) parameters are employed only with scheme number 1, while ws (wind speed) and wd (wind direction) are not needed with the scheme number 3.
-Note: date parameter is always necessary. Further necessary parameters are specified in the scheme description.
-
-
-## Meteorological output file
-
-Output meteorological file, specified in the toml configuration file with the key `windOutputFile`, will be in the '.csv' format and it will contain all input information and all the computed emission factor or emission values (according to the selected scheme), for all specified sources and species defined in the same configuration file.
-
 ## Configuration file
-The configuration file is in the toml format (see https://toml.io/en/): an example of this file is `config.toml`.
-The keys of this toml file are described in the following:
 
-- `input`: string containing the path to the input emission file (`="./test/pemtim"`)
-- `output`: string containing the path to the output emission file (`="./test/pemtimout"`)
-- `windInputFile`: string containing the path to the input meteo file (`="./test/met.csv"` or `="postbin.dat`)
+The configuration file is in *toml* format (see https://toml.io/en/): an example of configuration file `config.toml` is included in the repository.
+The keys of configuration file are described in the following:
+
+- `input`: string containing the path to the input emission file (`="./test/pemtim"`);
+- `output`: string containing the path to the output emission file (`="./test/pemtimout"`);
+- `windInputFile`: string containing the path to the input meteo file (`="./test/met.csv"` or `="postbin.dat`);
 - `mettype`: string containing the type of the input meteo file:
-  - = 'postbin' : it tries to read a postbin file.
-  - = 'csv' : it tries to read a .csv file.
-  - by default (by omitting the field or filling it with an invalid value) it tries to read a .csv file.
-- `windOutputFile`: string containing the path to the input meteo file and emission information of each source and species  (`="./test/metout.csv"`)
+  - = 'postbin' : it tries to read a *postbin* file.
+  - = 'csv' : it tries to read a *csv* file.
+  - by default (by omitting the field or filling it with an invalid value) it tries to read a *csv* file.
+- `*indOutputFile`: string containing the path to the output meteo file and emission information of each source and species (`="./test/metout.csv"`);
 - `mode`: (integer number or string) eolo mode for the model choice:
   - 0: spray
   - 1: calpuff
   - 2: impact
   - 3: aermod
 - `pemspe`: string containing the path to the pemspe file: it is needed only in spray mode (mode = 0)
-- `sources`: it is a toml inline table, that is an array delimited by `[{...}, {...}, {...}]`, and each element is a "dictionary", in this form `{key1 = val1, key2 = val2, etc...}`, that describes a source. The key `scheme` defines the algorithm to apply to a source. The keys of a source's dictionary can be different as will be shown in the following.
+- `sources`: it is a *toml* inline table, that is an array delimited by `[{...}, {...}, {...}]`, and each element is a "dictionary", in this form `{key1 = val1, key2 = val2, etc...}`, that describes a source. The key `scheme` defines the algorithm to apply to a source. The keys of a source's dictionary can be different as *ill be shown in the following.
 An example of values of this parameter is shown below:
 
 ```
@@ -100,8 +77,9 @@ sources = [
 ]
 ```
 Details on the **mandatory** keys that are **common** to all the schemes:
+
 - `id`: identifier string or number in the input emission file (it can also be a list, e.g. [1, 'source1', 'source 2']);
-- `scheme`: = {1,2,3} integer number that identifies the [scheme](#employed-formulas-and-bibliographical-references)
+- `scheme`: = {1,2,3} integer number that identifies the [scheme](#algorithms-and-bibliographical-references):
   - 1 = scheme for odour sources,
   - 2 = scheme for dust cumulus with available wind data,
   - 3 = scheme for dust cumulus with no available wind data;
@@ -109,11 +87,12 @@ Details on the **mandatory** keys that are **common** to all the schemes:
 - `height`: source height in meters.
 
 Description of **specific** keys for each scheme:
+
 - [scheme 1](#scheme-1---odour):
   - `terrain`: {"rural", "urban"} terrain type (**optional**)
   - `vref`: reference velocity (m/s) of the emission factor used to estimate the emission in the input file (**optional**, default = 0.3)
 
-- [scheme 2](#scheme-2---wind-erosion-of-dust-cumulus-with-available-wind-data)):
+- [scheme 2](#scheme-2---wind-erosion-of-dust-cumulus-with-available-wind-data):
   - `tfv`: threshold friction velocity (m/s) (**mandatory**);
   - `roughness`: rugosity or roughness length (cm) (**optional**, default = 0.5);
   - source geometry (**mandatory**):
@@ -124,17 +103,63 @@ Description of **specific** keys for each scheme:
   - `radius`: equivalent cumulus radius (m) (**mandatory**);
   - `movh`: hourly movement of cumulus number (**mandatory**).
 
-**Note**: geometrical information in the config.toml will not substitute those present in the emission file and no compatibility control is performed between the two file.
-## Employed formulas and bibliographical references
+**Note**: geometrical information in the `config.toml` will not substitute those present in the emission file and no compatibility control is performed between the two file.
+
+
+## Working hypothesis
+
+Working hypothesis of`eolo` are hereafter summarised:
+
+- The meteorological input file is always required. It must contain at least all the deadlines included in the emission file;
+- In the SPRAY model case, pemtim and pemspe input files must be provided in the format specified in `./test/pemtim` and `./test/pemspe`;
+- In the CALPUFF model case, calpuff input file must be provided in the format specified in `./test/calpuffpolv`;
+- In the IMPACT model case, impact input file must be provided in the format specified in `./test/impact_input.csv`;
+- In the AERMOD model case, aermod input file must be provided in the format specified in `./test/aeremi.dat`;
+- Only hourly emissions are allowed.
+
+
+## Meteorological input file
+
+The meteorological file is specified in the configuration file with the `windInputFile` key.
+Currently, two formats are recognised:
+
+1. A *csv* file with deadlines formatted as in the following:
+    ```
+    date,ws,wd,stabclass,z
+    2019-01-01T00:00:00Z,4.32,111,B,10
+    ```
+2. A text file in the *postbin* format. In this case, the field `mettype` has to be filled up with the string `postbin` in the toml configuration file.
+
+The `z` (wind field sensor height) and `stabclass` (stability class, specified with letters A,B,C,D,E,F or numbers 1,2,3,4,5,6) parameters are employed only with scheme number 1, while `ws` (wind speed) and `wd` (wind direction) are not needed by the scheme number 3.
+Note: the `date` parameter is always necessary. Further mandatory parameters are specified in the scheme description.
+
+
+## Meteorological output file
+
+Output meteorological file, specified in the toml configuration file with the key `windOutputFile`, will always be in the *csv* format and it will contain all input information and all the computed emission factor or emission values (according to the selected scheme), for all specified sources and species defined in the same configuration file.
+
+
+## Test files
+
+In the `./test/` folder some input emission files are provided as examples for all four models and for the meteorology:
+
+- `pemspe` and `pemtim` for SPRAY;
+- `calpuffpolv` for CALPUFF;
+- `impact_input.csv` for IMPACT;
+- `aeremi.dat` for AERMOD;
+- `windinput.csv` and `postbin.dat` for meteorology.
+
+
+## Algorithms and bibliographical references
 
 ### Scheme 1 - Odour
-SOER Multiplicative factor:
+Specific Odour Emission Rate (SOER) multiplicative factor:
 
-$$f = \left( \dfrac{w_s \left(\frac{z}{h}\right)^{\beta}}{v_{\text{ref}}}\right)^{\gamma}$$
+$$f = \left( \frac{w_s \left(\frac{z}{h}\right)^{\beta}}{v_{\text{ref}}}\right)^{\gamma}$$
 
 where $w_s$ is the wind speed, $\gamma = 0.5$, $z$ (m) is height at which the wind velocity is referred to, $h$ is the source height (m), $\beta$ is a parameter computed starting from the terrain type and the stability class specified in the input meteo file. If at least, one parameter between the terrain type or the stability class, then the default value of $\beta$ is 0.55, otherwise is computed according to the following table:
 
-|terrain type/stability class|A|B|C|D|E|F|
+| Terrain type / Stability class|A|B|C|D|E|F|
 |:---|---|---|---|---|---|---|
 |rural| 0.07 | 0.07 | 0.1 | 0.15 | 0.35 | 0.55 |
 |urban| 0.15 | 0.15 | 0.2 | 0.25 | 0.3 | 0.3 |
@@ -145,7 +170,7 @@ where $w_s$ is the wind speed, $\gamma = 0.5$, $z$ (m) is height at which the wi
 The algorithm according to the EPA AP-42 methodology is the following:
 
 - Computation of the wind at 10 meters (1000 cm):
-  $$ w_s = w_s(z)\dfrac{\log(1000/z_0)}{\log(z/z_0)} $$
+  $$ w_s = w_s(z)\frac{\log(1000/z_0)}{\log(z/z_0)} $$
   where $z_0$ is the roughness length (cm) and $z$ is the height at which the wind data are referred to.
 
 - Computation of fastest mile starting from wind speed:
@@ -155,8 +180,7 @@ $$f_m = 1.6 w_s + 0.43$$
 - Cumulus surface is computed according to its shape:
 
   1) pyramid shaped source
-  
-  $$S = \dfrac{8}{5} l_{major} \sqrt{\left(\dfrac{ l_{major}}{5}\right)^2 + h^2}  + \dfrac{4}{3}l_{minor} \sqrt{\left( \dfrac{l_{minor}}{3}\right) ^2 + h^2}$$
+  $$S = \frac{8}{5} l_{major} \sqrt{\left(\frac{ l_{major}}{5}\right)^2 + h^2}  + \frac{4}{3}l_{minor} \sqrt{\left( \frac{l_{minor}}{3}\right) ^2 + h^2}$$
   
   where $h$ is the cumulus height, $l_{major}, l_{minor}$ are the horizontal dimensions.
 
@@ -164,18 +188,17 @@ $$f_m = 1.6 w_s + 0.43$$
   
   $$S = \pi r \sqrt(r^2 + h^2)$$
 
-
 - Computation of friction velocity:
 
-  $$u_1^* = \max \left(0.4 \dfrac{f_m}{\log \frac{25}{z_0}} 0.2, u^*_{thr}\right)$$
+  $$u_1^* = \max \left(0.4 \frac{f_m}{\log \frac{25}{z_0}} 0.2, u^*_{thr}\right)$$
 
-  $$u_2^* = \max \left(0.4 \dfrac{f_m}{\log \frac{25}{z_0}} 0.6, u^*_{thr}\right)$$
+  $$u_2^* = \max \left(0.4 \frac{f_m}{\log \frac{25}{z_0}} 0.6, u^*_{thr}\right)$$
   
-  $$u_3^* = \max \left(0.4 \dfrac{f_m}{\log \frac{25}{z_0}} 0.9, u^*_{thr}\right)$$
+  $$u_3^* = \max \left(0.4 \frac{f_m}{\log \frac{25}{z_0}} 0.9, u^*_{thr}\right)$$
 
-  $$u_4^* = \max \left(0.4 \dfrac{f_m}{\log \frac{25}{z_0}} 1.1, u^*_{thr}\right)$$
+  $$u_4^* = \max \left(0.4 \frac{f_m}{\log \frac{25}{z_0}} 1.1, u^*_{thr}\right)$$
 
-  $$u_5^* = \max \left(0.4 \dfrac{f_m}{\log \frac{25}{z_0}}, u^*_{thr}\right)$$
+  $$u_5^* = \max \left(0.4 \frac{f_m}{\log \frac{25}{z_0}}, u^*_{thr}\right)$$
 
 where $z_0$ is the roughness lenght (cm), $u^*_{thr}$ is the threshold friction velocity, both set in the configuration file.
 
@@ -186,21 +209,21 @@ $$P_i = 58 (u_i^* - u^*_{thr})^2 + 25(u_i^* - u^*_{thr}), i = 1,2,3,4,5$$
 
 - Computation of hourly emitted mass (mcg):
 
-  a) if $\dfrac{h}{base} \le 0.2$:
+  a) if $\frac{h}{base} \le 0.2$:
   $$e_{r} = k S P_5  10^6$$
 
-  b) if $\dfrac{h}{base} > 0.2$:
+  b) if $\frac{h}{base} > 0.2$:
 
     1) if the shape of cumulus is symmetric (conical)
 
-    $$e_{r} = k S \dfrac{40 P_1 + 48 P_2 + 12 P_3 + 0P_4}{100} 10^6$$
+    $$e_{r} = k S \frac{40 P_1 + 48 P_2 + 12 P_3 + 0P_4}{100} 10^6$$
 
     2) if the shape of cumulus is asymmetric and the wind direction w.r.t. the orientation of the cumulus is between [0°,20°]:
-    $$e_{r} = k S \dfrac{36 P_1 + 50 P_2 + 14 P_3 + 0P_4}{100} 10^6$$
+    $$e_{r} = k S \frac{36 P_1 + 50 P_2 + 14 P_3 + 0P_4}{100} 10^6$$
     3) if the shape of cumulus is asymmetric and the wind direction w.r.t. the orientation of the cumulus is between (20°,40°]:
-    $$e_{r} = k S \dfrac{31 P_1 + 51 P_2 + 15 P_3 + 3P_4}{100} 10^6$$
+    $$e_{r} = k S \frac{31 P_1 + 51 P_2 + 15 P_3 + 3P_4}{100} 10^6$$
     4) if the shape of cumulus is asymmetric and the wind direction w.r.t. the orientation of the cumulus is between (40°,90°]:
-    $$e_{r} = k S \dfrac{28 P_1 + 54 P_2 + 14 P_3 + 4P_4}{100} 10^6$$
+    $$e_{r} = k S \frac{28 P_1 + 54 P_2 + 14 P_3 + 4P_4}{100} 10^6$$
 
 with $k = 0.075$ for PM25, $k = 0.5$ for PM10, $k = 1$ for PTS.
 
@@ -215,8 +238,8 @@ $$e_{r} = 10^9  e_{f} S m_{h}$$
 
 - $e_{r}$ is the emission rate (in mcg) (or hourly emitted pollutant mass) that will go in the output emission file.
 - $e_{f}$ is the pollutant emitted value:
-  1) if $\dfrac{h}{2r} > 0.2$, that is the high cumulus case, for the PM25, $= 1.26 \cdot 10^{-6}$, for the PM10, $= 7.9 \cdot 10^{-6}$, for the PTS, $= 1.6 \cdot 10^{-5}$,
-  2) se $\dfrac{h}{2r} \le 0.2$, that is the low cumulus case, for the PM25, $= 3.8 \cdot 10^{-5}$, for the PM10, $= 2.5 \cdot 10^{-4}$, for the PTS, $= 5.1 \cdot 10^{-4}$.
+  1) if $\frac{h}{2r} > 0.2$, that is the high cumulus case, for the PM25, $= 1.26 \cdot 10^{-6}$, for the PM10, $= 7.9 \cdot 10^{-6}$, for the PTS, $= 1.6 \cdot 10^{-5}$,
+  2) se $\frac{h}{2r} \le 0.2$, that is the low cumulus case, for the PM25, $= 3.8 \cdot 10^{-5}$, for the PM10, $= 2.5 \cdot 10^{-4}$, for the PTS, $= 5.1 \cdot 10^{-4}$.
 - $S = \pi r \sqrt(r^2 + h^2)$ is the conical shape cumulus surface, where $h$ is the height and $r$ is the radius.
 - $m_{h}$ is the number of hourly movement of cumulus.
 
@@ -227,3 +250,7 @@ To generate the pdf manual, one can simply type this command on the terminal:
 ```{sh}
 $ pandoc --to=pdf README.md -V geometry:margin=25mm -o README.pdf
 ```
+
+## Authors
+
+`eolo` is currently developed and maintained by Massimiliano Romana at [Simularia](https://www.simularia.it).
