@@ -216,7 +216,7 @@ dove $z_0$ è la rugosità (in cm), $u^*_{thr}$ è la velocità d'attrito di sog
 
 - Calcolo del potenziale erosivo:
 
-$$P_i = 58 (u_i^{*} - u^{*}_{thr})^2 + 25(u_i^{*} - u^{*}_{thr})$$
+$$ P_i = 58 (u^{*}_{i} - u^{*}_{thr})^2 + 25(u^{*}_{i} - u^{*}_{thr}) $$
 
 dove $i = 1,2,3,4,5$.
 
@@ -224,21 +224,26 @@ dove $i = 1,2,3,4,5$.
 - Calcolo massa oraria emessa in mcg:
 
   a) se $\frac{h}{base} \le 0.2$:
-  $$e_{r} = k S P_5  10^6$$
+
+  $$e_{r} = k S P_5  10^{6}$$
 
   b) se $\frac{h}{base} > 0.2$:
 
     1) se la forma del cumulo è simmetrica (conica)
 
-    $$e_{r} = k S \frac{40 P_1 + 48 P_2 + 12 P_3 + 0P_4}{100} 10^6$$
+    $$e_{r} = k S \frac{40 P_1 + 48 P_2 + 12 P_3 + 0P_4}{100} 10^{6}$$
 
     2) se la forma del cumulo è asimmetrica con vento incidente tra [0°,20°]:
 
-    $$e_{r} = k S \frac{36 P_1 + 50 P_2 + 14 P_3 + 0P_4}{100} 10^6$$
+    $$e_{r} = k S \frac{36 P_1 + 50 P_2 + 14 P_3 + 0P_4}{100} 10^{6}$$
+
     3) se la forma del cumulo è asimmetrica con vento incidente tra (20°,40°]:
-    $$e_{r} = k S \frac{31 P_1 + 51 P_2 + 15 P_3 + 3P_4}{100} 10^6$$
+
+    $$e_{r} = k S \frac{31 P_1 + 51 P_2 + 15 P_3 + 3P_4}{100} 10^{6}$$
+
     4) se la forma del cumulo è asimmetrica con vento incidente tra (40°,90°]:
-    $$e_{r} = k S \frac{28 P_1 + 54 P_2 + 14 P_3 + 4P_4}{100} 10^6$$
+
+    $$e_{r} = k S \frac{28 P_1 + 54 P_2 + 14 P_3 + 4P_4}{100} 10^{6}$$
 
 con $k = 0.075$ per il PM25, $k = 0.5$ per il PM10, $k = 1$ per le PTS.
 
@@ -253,7 +258,7 @@ Riferimenti bibliografici:
 
 L'algoritmo implementa la metodologia semplificata di ARPA Toscana (basato su EPA AP-42) è sintetizzato dalla seguente formula:
 
-$$e_{r} = 10^9  e_{f} S m_{h}$$
+$$ e_r = 10^{9} e_f S m_h $$
 
 dove:
 

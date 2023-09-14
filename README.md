@@ -41,15 +41,15 @@ optional arguments:
 
 ## Configuration file
 
-The configuration file is in *toml* format (see https://toml.io/en/): an example of configuration file `config.toml` is included in the repository.
+The configuration file is in [*toml*](https://toml.io/en/) format. An example of configuration file `config.toml` is included in the repository.
 The keys of configuration file are described in the following:
 
 - `input`: string containing the path to the input emission file (`="./test/pemtim"`);
 - `output`: string containing the path to the output emission file (`="./test/pemtimout"`);
-- `windInputFile`: string containing the path to the input meteo file (`="./test/met.csv"` or `="postbin.dat`);
+- `windInputFile`: string containing the path to the input meteo file (`="./test/met.csv"` or `="postbin.dat"`);
 - `mettype`: string containing the type of the input meteo file:
-  - = 'postbin' : it tries to read a *postbin* file.
-  - = 'csv' : it tries to read a *csv* file.
+  - = "postbin" : it tries to read a *postbin* file.
+  - = "csv" : it tries to read a *csv* file.
   - by default (by omitting the field or filling it with an invalid value) it tries to read a *csv* file.
 - `*indOutputFile`: string containing the path to the output meteo file and emission information of each source and species (`="./test/metout.csv"`);
 - `mode`: (integer number or string) eolo mode for the model choice:
@@ -137,6 +137,7 @@ Currently, two formats are recognised:
 2. A text file in the *postbin* format. In this case, the field `mettype` has to be filled up with the string `postbin` in the toml configuration file.
 
 The `z` (wind field sensor height) and `stabclass` (stability class, specified with letters A,B,C,D,E,F or numbers 1,2,3,4,5,6) parameters are employed only with scheme number 1, while `ws` (wind speed) and `wd` (wind direction) are not needed by the scheme number 3.
+
 Note: the `date` parameter is always necessary. Further mandatory parameters are specified in the scheme description.
 
 
@@ -170,7 +171,8 @@ where $w_s$ is the wind speed, $\gamma = 0.5$, $z$ (m) is height at which the wi
 |rural| 0.07 | 0.07 | 0.1 | 0.15 | 0.35 | 0.55 |
 |urban| 0.15 | 0.15 | 0.2 | 0.25 | 0.3 | 0.3 |
 
-- Reference: Bellasio, R.; Bianconi, R. A Heuristic Method for Modeling Odor Emissions from Open Roof Rectangular Tanks. Atmosphere 2022, 13, 367. https://doi.org/10.3390/atmos13030367
+Reference:
+- Bellasio, R.; Bianconi, R. A Heuristic Method for Modeling Odor Emissions from Open Roof Rectangular Tanks. Atmosphere 2022, 13, 367. https://doi.org/10.3390/atmos13030367
 
 ### Scheme 2 - wind erosion of dust cumulus with available wind data
 The algorithm according to the EPA AP-42 methodology is the following:
@@ -210,8 +212,9 @@ where $z_0$ is the roughness lenght (cm), $u^*_{thr}$ is the threshold friction 
 
 - Computation of erosion potential:
 
-$$P_i = 58 (u_i^* - u^*_{thr})^2 + 25(u_i^* - u^*_{thr}), i = 1,2,3,4,5$$
+$$P_i = 58 (u_i^{*} - u^{*}_{thr})^{2} + 25(u_i^{*} - u^{*}_{thr})$$
 
+with $i = 1,2,3,4,5$.
 
 - Computation of hourly emitted mass (mcg):
 
@@ -233,14 +236,17 @@ $$P_i = 58 (u_i^* - u^*_{thr})^2 + 25(u_i^* - u^*_{thr}), i = 1,2,3,4,5$$
 
 with $k = 0.075$ for PM25, $k = 0.5$ for PM10, $k = 1$ for PTS.
 
-- References: 
-  - https://www.epa.gov/air-emissions-factors-and-quantification/ap-42-compilation-air-emissions-factors AP-42: Compilation of Air Emissions Factors, Sezione 13.2.5 Industrial Wind Erosion
-  - Davis, F. K., and H. Newstein, 1968: The variation of gust factors and mean wind speed with height. J. Appl. Meteor., 7, 372–378
+References: 
+
+- EPA AP-42: Compilation of Air Emissions Factors, Sezione 13.2.5 Industrial Wind Erosion https://www.epa.gov/air-emissions-factors-and-quantification/ap-42-compilation-air-emissions-factors 
+
+- Davis, F. K., and H. Newstein, 1968: The variation of gust factors and mean wind speed with height. J. Appl. Meteor., 7, 372–378
+
 
 ### Scheme 3 - wind erosion of dust cumulus with no available wind data
 The algorithm proposed in the simplified methodology of ARPA Toscana is summarized with the following formula:
 
-$$e_{r} = 10^9  e_{f} S m_{h}$$
+$$ e_r = 10^{9} e_f S m_h $$
 
 - $e_{r}$ is the emission rate (in mcg) (or hourly emitted pollutant mass) that will go in the output emission file.
 - $e_{f}$ is the pollutant emitted value:
@@ -249,9 +255,11 @@ $$e_{r} = 10^9  e_{f} S m_{h}$$
 - $S = \pi r \sqrt(r^2 + h^2)$ is the conical shape cumulus surface, where $h$ is the height and $r$ is the radius.
 - $m_{h}$ is the number of hourly movement of cumulus.
 
-- Reference: Sezione 1.4 "EROSIONE DEL VENTO DAI CUMULI" del documento "LINEE GUIDA PER LA VALUTAZIONE DELLE EMISSIONI DI POLVERI PROVENIENTI DA ATTIVITÀ DI PRODUZIONE, MANIPOLAZIONE, TRASPORTO, CARICO O STOCCAGGIO DI MATERIALI POLVERULENTI", di ARPA TOSCANA
+- Reference: Sezione 1.4 "Erosione del vento dai cumuli" del documento "Linee guida per la valutazione delle emissioni di polveri provenienti da attività di produzione, manipolazione, trasporto, carico o stoccaggio di materiali polverulenti", di Arpa Toscana.
+
 
 ## Generate PDF manual starting from this readme
+
 To generate the pdf manual, one can simply type this command on the terminal:
 ```{sh}
 $ pandoc --to=pdf README.md -V geometry:margin=25mm -o README.pdf
@@ -261,7 +269,9 @@ $ pandoc --to=pdf README.md -V geometry:margin=25mm -o README.pdf
 
 `eolo` is currently developed and maintained by Massimiliano Romana at [Simularia](https://www.simularia.it).
 
+
 ## Licence
+
 `eolo` is [free software](https://fsfe.org/freesoftware/freesoftware.en.html) whose copyright holder is [Simularia s.r.l.](https://www.simularia.it) and it is distributed under the GNU Affero General Public License v3.0 or later.
 
 
