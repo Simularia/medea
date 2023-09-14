@@ -1,0 +1,13 @@
+# Mac garbage and other generic files
+.DS_Store
+._.DS_Store
+*.swp
+*.out
+*.a
+
+# Binaries
+*.exe
+*.doc
+*.pdf
+*.docx
+*.nc
