@@ -10,7 +10,7 @@ from emifile import pemtim, calpuff, impact, aermod
 from met import readmet, writemet
 import tomli
 
-__version__ = '0.0.1'
+__version__ = '1.0.0'
 
 
 def check_mode(input):
@@ -105,10 +105,11 @@ def main():
     fh.setLevel(logging.DEBUG)
     logger.addHandler(fh)
 
-    logger.info("======================")
-    logger.info("======= EOLO =========")
+    logger.info("==========================")
+    logger.info("========= EOLO ===========")
     logger.info(f"Version {__version__}")
-    logger.info("======================")
+    logger.info("Licence: AGPL-3.0-or-later")
+    logger.info("==========================")
 
     # Get path of input and output files
     cFile = Path(args.config)
