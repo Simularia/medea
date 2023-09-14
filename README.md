@@ -1,3 +1,9 @@
+<!-- 
+ SPDX-FileCopyrightText: 2023 Simularia s.r.l. <info@simualaria.it>
+
+ SPDX-License-Identifier: AGPL-3.0-or-later
+-->
+
 # EOLO
 
 ## Introduction
@@ -254,3 +260,8 @@ $ pandoc --to=pdf README.md -V geometry:margin=25mm -o README.pdf
 ## Authors
 
 `eolo` is currently developed and maintained by Massimiliano Romana at [Simularia](https://www.simularia.it).
+
+## Licence
+`eolo` is [free software](https://fsfe.org/freesoftware/freesoftware.en.html) whose copyright holder is [Simularia s.r.l.](https://www.simularia.it) and it is distributed under the GNU Affero General Public License v3.0 or later.
+
+

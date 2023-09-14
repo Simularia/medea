@@ -1,12 +1,9 @@
-###############################################################################
 #
-# Simularia s.r.l.
-# via Sant'Antonio da Padova 12
-# Torino, Italy
-# www.simularia.it
-# info@simularia.it
+# SPDX-FileCopyrightText: 2023 Simularia s.r.l. <info@simualaria.it>
 #
-###############################################################################
+# SPDX-License-Identifier: AGPL-3.0-or-later
+#
+
 from datetime import datetime, timedelta
 import logging
 import sys

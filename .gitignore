@@ -1,3 +1,9 @@
+#
+# SPDX-FileCopyrightText: 2023 Simularia s.r.l. <info@simualaria.it>
+#
+# SPDX-License-Identifier: CC0-1.0
+#
+
 # Mac garbage and other generic files
 .DS_Store
 ._.DS_Store

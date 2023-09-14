@@ -1,3 +1,9 @@
+<!-- 
+ SPDX-FileCopyrightText: 2023 Simularia s.r.l. <info@simualaria.it>
+
+ SPDX-License-Identifier: AGPL-3.0-or-later
+-->
+
 # Documentazione EOLO
 
 ## Uso del programma eolo
