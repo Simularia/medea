@@ -255,7 +255,7 @@ $$ e_r = 10^{9} e_f S m_h $$
 - $S = \pi r \sqrt(r^2 + h^2)$ is the conical shape cumulus surface, where $h$ is the height and $r$ is the radius.
 - $m_{h}$ is the number of hourly movement of cumulus.
 
-- Reference: Sezione 1.4 "Erosione del vento dai cumuli" del documento "Linee guida per la valutazione delle emissioni di polveri provenienti da attività di produzione, manipolazione, trasporto, carico o stoccaggio di materiali polverulenti", di Arpa Toscana.
+- Reference: Section 1.4 "Erosione del vento dai cumuli" del documento "Linee guida per la valutazione delle emissioni di polveri provenienti da attività di produzione, manipolazione, trasporto, carico o stoccaggio di materiali polverulenti" by Arpa Toscana.
 
 
 ## Generate PDF manual starting from this readme
