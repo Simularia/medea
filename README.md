@@ -51,7 +51,7 @@ The keys of configuration file are described in the following:
   - = "postbin" : it tries to read a *postbin* file.
   - = "csv" : it tries to read a *csv* file.
   - by default (by omitting the field or filling it with an invalid value) it tries to read a *csv* file.
-- `*indOutputFile`: string containing the path to the output meteo file and emission information of each source and species (`="./test/metout.csv"`);
+- `windOutputFile`: string containing the path to the output meteo file and emission information of each source and species (`="./test/metout.csv"`);
 - `mode`: (integer number or string) eolo mode for the model choice:
   - 0: spray
   - 1: calpuff
