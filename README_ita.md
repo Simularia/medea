@@ -10,9 +10,12 @@
 
 Usa `eolo` per calcolare l'input emissivo dipendente dal vento per diversi modelli di dispersione atmosferica.
 Questo strumento funziona con i modelli di dispersione in atmosfera CALPUFF, AERMOD, ARIA-IMPACT e SPRAY. Le emissioni sono calcolate secondo diversi schemi adatti per simulazioni numeriche sia di odore che di qualità dell'aria.
-
 Nella [sezione](#algoritmi-e-riferimenti-bibliografici) dedicata sono riportati la descrizione degli algoritmi utilizzati e le referenze bibliografiche.
 
+Per generare il documento *PDF* di questo manuale, digitare sul terminale il seguente comando:
+```{sh}
+$ pandoc --to=pdf README_ita.md -V geometry:margin=25mm -o README_ita.pdf
+```
 
 ## Uso del codice eolo
 
@@ -276,18 +279,12 @@ Riferimento bibliografico:
 - Sezione 1.4 "Erosione del vento dai cumuli" del documento "Linee guida per la valutazione delle emissioni di polveri provenienti da attività di produzione, manipolazione, trasporto, carico o stoccaggio di materiali polverulenti", di Arpa Toscana.
 
 
-## Generazione del README.pdf
+## Contatti
 
-Per generare il documento *pdf* di questo manuale, digitare sul terminale il seguente comando:
-```{sh}
-$ pandoc --to=pdf README_ita.md -V geometry:margin=25mm -o README_ita.pdf
-```
-
-## Autori
-
-`eolo` è sviluppato e mantenuto da Massimiliano Romana presso [Simularia](https://www.simularia.it).
+`eolo` è sviluppato da Massimiliano Romana (maintainer) e Giuseppe Carlino presso [Simularia](https://www.simularia.it).
+Per **risolvere bug** e **nuove funzionalità** [segnalate un problema](https://github.com/simularia/eolo/issues/new). Ogni altra richiesta può essere inoltrata via [email](info@simularia.it).
 
 ## Licenza
 
-`eolo` è un [software libero](https://fsfe.org/freesoftware/freesoftware.en.html) il cui copyright è di [Simularia s.r.l.](https://www.simularia.it) ed è distribuito con licenza GNU Affero General Public License v3.0 o successivi.
+`eolo` è un [software libero](https://fsfe.org/freesoftware/freesoftware.en.html) il cui copyright è di [Simularia s.r.l.](https://www.simularia.it) ed è distribuito con licenza GNU Affero General Public License v3.0 o successivi. Leggete il [file della licenza](./LICENSES/AGPL-3.0-or-later.txt) per maggiori informazioni.
 
