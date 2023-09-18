@@ -21,18 +21,6 @@ def odour(met, conf, ind):
           'urban': [0.15, 0.15, 0.2, 0.25, 0.3, 0.3]}
 
     tab = pd.DataFrame(data=dt, index=["A", "B", "C", "D", "E", "F"])
-    if 'terrain' in conf['sources'][ind].keys() and 'stabclass' in met.keys():
-        logger.debug("Terrain type and stability class information")
-        logger.debug("are available: computing beta.")
-        beta = pd.DataFrame(
-            columns=['val'],
-            data=tab[conf['sources'][ind]['terrain']][met['stabclass']]
-            .to_list(),
-            index=met.index.values.tolist())
-    else:
-        beta = 0.55  # default value
-        logger.debug("Terrain type or stability class information")
-        logger.debug(f"are missing: default beta value = {beta}.")
     if 'vref' in conf['sources'][ind].keys():
         vref = conf['sources'][ind]['vref']
         logger.debug("Reference velocity available from the")
@@ -42,7 +30,21 @@ def odour(met, conf, ind):
         logger.debug("Reference velocity not available from the")
         logger.debug(f"configuration toml file: {vref} default value.")
     rat = met['z']/conf['sources'][ind]['height']
-    tmp = (met['ws']*(rat.pow(beta['val']))/vref)**gamma
+    if 'terrain' in conf['sources'][ind].keys() and 'stabclass' in met.keys():
+        logger.debug("Terrain type and stability class information")
+        logger.debug("are available: computing beta.")
+        beta = pd.DataFrame(
+            columns=['val'],
+            data=tab[conf['sources'][ind]['terrain']][met['stabclass']]
+            .to_list(),
+            index=met.index.values.tolist())
+        tmp = (met['ws']*(rat.pow(beta['val']))/vref)**gamma
+    else:
+        beta = 0.55  # default value
+        logger.debug("Terrain type or stability class information")
+        logger.debug(f"are missing: default beta value = {beta}.")
+        tmp = (met['ws']*(rat.pow(beta))/vref)**gamma
+
     colname = str(conf['sources'][ind]['id']) + '_' + \
         conf['sources'][ind]['species'][0]
     met.insert(len(met.columns), colname, round(tmp, 2))

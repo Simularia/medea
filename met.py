@@ -42,7 +42,7 @@ def readmet(conf):
     else:
         try:
             # read input csv meteo file in a pandas dataframe
-            met = pd.read_csv(conf['windinputfile'])
+            met = pd.read_csv(conf['windInputFile'])
             if 'stabclass' in met.keys():
                 met.replace({'stabclass' : { 1 : 'A', 2 : 'B', 3 : 'C',
                                             4 : 'D', 5 : 'E', 6 : 'F' ,
@@ -50,7 +50,7 @@ def readmet(conf):
                                             'd' : 'D', 'e' : 'E', 'f' : 'F' }})
             logger.info("Correct reading of meteo file csv.")
         except Exception as e:
-            logger.info(f"Error reading {conf['windinputfile']}: exit.")
+            logger.info(f"Error reading {conf['windInputFile']}: exit.")
             logger.info(f"The error is {e}.")
             sys.exit()
     return met
