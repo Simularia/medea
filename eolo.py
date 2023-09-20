@@ -61,7 +61,6 @@ def readconf(cFile):
             oldsou.append(conf['sources'][i])
     conf['sources'] = []
     conf['sources'] = oldsou + newsou
-    print(conf['sources'])
     logger.debug("Configuration toml file read correctly.")
     return conf
 
