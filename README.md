@@ -73,7 +73,7 @@ sources = [
       terrain = "rural", vref = 0.6},
 
     ### scheme 2 - wind erosion of dust cumulus with available data
-    # pyramidal shape (2 sides and an angle)
+    # asymmetric shape (2 sides and an angle)
     { id = 2, scheme = 2, species = ["PTS", "PM25", "PM10"], 
       height = 4, major = 5, minor = 3, angle = 15, 
       roughness = 0.5, tfv = 0.05},  
@@ -107,7 +107,7 @@ Description of **specific** keys for each scheme:
   - `tfv`: threshold friction velocity (m/s) (**mandatory**);
   - `roughness`: rugosity or roughness length (cm) (**optional**, default = 0.5);
   - source geometry (**mandatory**):
-    - pyramid: `major`, `minor`, `angle`, sides of the base rectangle (m) and angle between the major side and the x-axis (anticlockwise, range -90°,+90°);
+    - asymmetric (trapezoidal prism): `major`, `minor`, `angle`, sides of the base rectangle (m) and angle between the major side and the x-axis (anticlockwise, range -90°,+90°);
     - conic: `radius`, cone radius (m).
 
 - [scheme 3](#scheme-3---wind-erosion-of-dust-cumulus-with-no-available-wind-data):
@@ -191,15 +191,15 @@ $$f_m = 1.6 w_s + 0.43$$
 
 
 - Cumulus surface is computed according to its shape:
-
-  1) pyramid shaped source
-  $$S = \frac{8}{5} l_{major} \sqrt{\left(\frac{ l_{major}}{5}\right)^2 + h^2}  + \frac{4}{3}l_{minor} \sqrt{\left( \frac{l_{minor}}{3}\right) ^2 + h^2}$$
+  1) trapezoidal prism shaped source
+  $$ T = \frac{l_{minor}}{2} - h$$
+  $$S = \frac{h (T + l_{minor})}{2} + l_{obl} l_{major} + T l_{major} + l_{obl} l_{major}+ \frac{h (T + l_{minor})}{2} $$
   
-  where $h$ is the cumulus height, $l_{major}, l_{minor}$ are the horizontal dimensions.
+  where $T$ is the top side of the trapezoid section, $l_{obl}$ is the oblique side of the trapezoid section, $h$ is the cumulus height, $l_{major}, l_{minor}$ are the horizontal dimensions.
 
   2) conical shaped source
   
-  $$S = \pi r \sqrt(r^2 + h^2)$$
+  $$S = \pi r \sqrt{r^2 + h^2}$$
 
 - Computation of friction velocity:
 

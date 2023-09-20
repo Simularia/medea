@@ -50,6 +50,7 @@ def odour(met, conf, ind):
     met.insert(len(met.columns), colname, round(tmp, 2))
     return met
 
+
 def sympar(sym, alpha):
     if sym:
         ppsa = np.array([40.0, 48.0, 12.0, 0.0])       
@@ -57,29 +58,50 @@ def sympar(sym, alpha):
         ppsa = np.empty((len(alpha), 4), dtype=float)
         for ind in range(0, len(alpha)):
             val = alpha[ind]
-            if (val>=0.0) and (val<=20.0):
+            if (val >= 0.0) and (val <= 20.0):
                 ppsa[ind, :] = np.array([36.0, 50.0, 14.0, 0.0])
-            if (val>20.0) and (val<=40.0):
+            if (val > 20.0) and (val <= 40.0):
                 ppsa[ind, :] = np.array([31.0, 51.0, 15.0, 3.0])
-            if (val>40.0) and (val<=90.0):
+            if (val > 40.0) and (val <= 90.0):
                 ppsa[ind, :] = np.array([28.0, 54.0, 14.0, 4.0])
     return ppsa
-    
+
+
 def inc2alpha(input):
 
-    if input>360.0:
+    if (input > 360.0):
         input = input - 360.0
-    if input<0.0:
+    if (input < 0.0):
         input = input + 360.0
-    if input>=270.0:
+    if (input >= 270.0):
         alpha = input - 270.0
-    if input<270.0 and input>180:
+    if ((input < 270.0) and (input > 180)):
         alpha = 270 - input
-    if input<=180.0 and input>90:
+    if ((input <= 180.0) and (input > 90)):
         alpha = input - 90.0
-    if input<90.0:
+    if (input <= 90.0):
         alpha = 90.0 - input
     return alpha
+
+
+def asymsurface(major, minor, height):
+    """Computation of asymmetric shape (trapezoidal prism)."""
+    logger = logging.getLogger()
+    logger.debug('{}'.format(asymsurface.__doc__))
+
+    if (height >= (minor/2)):
+        logger.info("Invalid geometrical values of the cumulus")
+        logger.info(f"({height} >= {minor/2}) causes")
+        logger.info("lateral slope over 45°: exit.")
+        sys.exit()
+    top = minor/2 - height
+    slope = 180.0*math.atan(height/((minor-top)/2))/math.pi
+    logger.info(f"Trapezoidal top side is {round(top,1)} meters and")
+    logger.info(f"the lateral slope is {round(slope,1)} degrees.")
+    oblique = math.sqrt(height**2 + ((minor-height)/2)**2)
+    s = height*(minor + top) + (2*oblique + top)*major
+    return s
+
 
 def scheme2(met, conf, ind):
     """Cumulus scheme to set emissions."""
@@ -90,42 +112,46 @@ def scheme2(met, conf, ind):
         logger.info(f"Invalid species in source {sou['id']}: exit.")
         sys.exit()
 
-    listpyr = ['major', 'minor', 'angle', 'height']
-    pyramid = all(item in sou.keys() for item in listpyr)
+    listasym = ['major', 'minor', 'angle', 'height']
+    asymmetric = all(item in sou.keys() for item in listasym)
     listcon = ['radius', 'height']
     conical = all(item in sou.keys() for item in listcon)
 
-    if ((pyramid + conical) != 1):
+    if ((asymmetric + conical) != 1):
         logger.info(f"Undefined shape of source {sou['id']}: exit.")
         sys.exit()
 
-    if pyramid:
+    if asymmetric:
+        logger.debug(f"Source {sou['id']} has asymmetric shape.")
         major = sou['major']
         minor = sou['minor']
-        ap1 = math.sqrt((major / 5)**2 + sou['height']**2)
-        ap2 = math.sqrt((minor / 3)**2 + sou['height']**2)
-        s = 8 * major * ap2 / 5 + 4 * minor * ap1 / 3
-        base = minor
         if (abs(sou['angle']) > 90.0):
             logger.info(f"Bad definition of angle {sou['angle']}: exit.")
             sys.exit()
+        if (major <= minor):
+            logger.info("Bad definition of geometry (major < minor),")
+            logger.info(f"{major} < {minor}: exit.")
+            sys.exit()
+        # ap1 = math.sqrt((major / 5)**2 + sou['height']**2)
+        # ap2 = math.sqrt((minor / 3)**2 + sou['height']**2)
+        # s = 8 * major * ap2 / 5 + 4 * minor * ap1 / 3
+        s = asymsurface(major, minor, sou['height'])
+        base = minor
         # computing angle to select EPA case
-        if sou['angle']<0.0:
+        if sou['angle'] < 0.0:
             ainc = (met['wd'] - (-90.0 - sou['angle']))
         else:
             ainc = (met['wd'] - (90.0 - sou['angle']))
 
         alpha = ainc.apply(inc2alpha)
         ppsa = sympar(False, alpha.to_numpy())
-        logger.debug(f"Source {sou['id']} has pyramid shape.")
-
     elif conical:
         r = sou['radius']
         h = sou['height']
         s = math.pi*r*math.sqrt(r**2 + h**2)
         base = 2*r
         ppsa = sympar(True, 1.0)
-        ppsa = np.repeat(a = ppsa, repeats = len(met['ws']), axis=0)
+        ppsa = np.repeat(a=ppsa, repeats=len(met['ws']), axis=0)
         logger.debug(f"Source {sou['id']} has conical shape.")
 
     else:

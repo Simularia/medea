@@ -74,7 +74,7 @@ sources = [
       terrain = "rural", vref = 0.6},
 
     ### schema 2 - erosione cumulo di polveri con base dati vento disponibile
-    # forma piramidale (lati e angolo)
+    # forma asimmetrica - prisma trapezoidale (lati e angolo)
     { id = 2, scheme = 2, species = ["PTS", "PM25", "PM10"], 
       height = 4, major = 5, minor = 3, angle = 15, 
       roughness = 0.5, tfv = 0.05},  
@@ -108,7 +108,7 @@ Descrizione dei campi **specifici** per ciascun schema:
   - `tfv`: velocità (m/s) d'attrito di soglia (**obbligatorio**);
   - `roughness`: lunghezza di rugosità (cm) (**opzionale**, default = 0.5);
   - geometria della sorgente (**obbligatorio**):
-    - piramide: `major`, `minor`, `angle`, lati del rettangolo alla base (m) e angolo del lato lungo rispetto all'asse x (senso antiorario, range -90°,+90°);
+    - asimmetrica (prisma trapezoidale): `major`, `minor`, `angle`, lati del rettangolo alla base (m) e angolo del lato lungo rispetto all'asse x (senso antiorario, range -90°,+90°);
     - conica: `radius`, raggio (m) del cono.
 
 - [schema 3](#schema-3---cumuli-polveri-senza-luso-dei-dati-di-vento):
@@ -194,10 +194,11 @@ $$f_m = 1.6 w_s + 0.43$$
 
 - La superficie viene calcolata a seconda della forma del cumulo:
 
-  1) sorgente piramidale:
-  $$S = \frac{8}{5} l_{major} \sqrt{\left(\frac{ l_{major}}{5}\right)^2 + h^2}  + \frac{4}{3}l_{minor} \sqrt{\left( \frac{l_{minor}}{3}\right) ^2 + h^2}$$
+  1) sorgente di forma asimmetrica (prisma a sezione trapezoidale):
+  $$ T = \frac{l_{minor}}{2} - h$$
+  $$S = \frac{h (T + l_{minor})}{2} + l_{obl} l_{major} + T l_{major} + l_{obl} l_{major}+ \frac{h (T + l_{minor})}{2} $$
   
-  dove $h$ è l'altezza del cumulo, $l_{major}, l_{minor}$ sono le dimensioni orizzontali del cumulo.
+  dove $T$ è la base minore della sezione trapezoidale, $l_{obl}$ è il lato obliquo, $h$ è l'altezza del cumulo, $l_{major}, l_{minor}$ sono le dimensioni orizzontali del cumulo.
 
   2) sorgente conica
   $$S = \pi r \sqrt{r^2 + h^2}$$
