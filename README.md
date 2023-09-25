@@ -8,16 +8,17 @@
 
 ## Introduction
 
-Use `eolo` to compute wind dependent emission input files for many atmospheric dispersion models. 
-The tool works with different models, such as CALPUFF, AERMOD, ARIA-IMPACT and SPRAY. Emissions are computed according to different schemes suitable for odour and air quality modelling.
-See [below](#algorithms-and-bibliographical-references) for a description of the relevant algorithms and for the bibliographical references.
+Use `eolo` to compute **wind dependent emission** input files for many atmospheric pollution dispersion models. 
+Emissions are computed according to different schemes suitable for **odour** and **particulate matter** modelling.
+See [below](#algorithms-and-bibliographical-references) for a description of the relevant algorithms and for bibliographical references.
+
+The tool currently works with the following atmospheric dispersion models: CALPUFF, ARIA-IMPACT, SPRAY, AERMOD.
 
 To generate the *PDF* manual from this document, type this command on the terminal:
 ```{sh}
 $ pandoc --to=pdf README.md -V geometry:margin=25mm -o README.pdf
 ```
 
-[See here](./README_ita.md) for an Italian version of this document.
 
 ## How to use eolo
 
@@ -110,7 +111,7 @@ Description of **specific** keys for each scheme:
     - asymmetric (trapezoidal prism): `major`, `minor`, `angle`, sides of the base rectangle (m) and angle between the major side and the x-axis (anticlockwise, range -90°,+90°);
     - conic: `radius`, cone radius (m).
 
-- [scheme 3](#scheme-3---wind-erosion-of-dust-cumulus-with-no-available-wind-data):
+- [scheme 3](#scheme-3-wind-erosion-of-dust-cumulus-with-no-wind-data-available):
   - `radius`: equivalent cumulus radius (m) (**mandatory**);
   - `movh`: hourly movement of cumulus number (**mandatory**).
 
@@ -164,44 +165,52 @@ In the `./test/` folder some input emission files are provided as examples for a
 
 ## Algorithms and bibliographical references
 
+
 ### Scheme 1 - Odour
+
 Specific Odour Emission Rate (SOER) multiplicative factor:
 
 $$f = \left( \frac{w_s \left(\frac{z}{h}\right)^{\beta}}{v_{\text{ref}}}\right)^{\gamma}$$
 
-where $w_s$ is the wind speed, $\gamma = 0.5$, $z$ (m) is height at which the wind velocity is referred to, $h$ is the source height (m), $\beta$ is a parameter computed starting from the terrain type and the stability class specified in the input meteo file. If at least, one parameter between the terrain type or the stability class, then the default value of $\beta$ is 0.55, otherwise is computed according to the following table:
+where $w_s$ is the wind speed, $\gamma = 0.5$, $z$ (m) is the reference height for the wind velocity, $h$ is the source height (m), $\beta$ is a parameter dependent on the terrain type and the stability class specified in the input meteorological file. If either the terrain type or the stability class is missing, then the default value of $\beta$ is set to 0.55, otherwise it is chosen according to the following table:
 
-| Terrain type / Stability class|A|B|C|D|E|F|
-|:---|---|---|---|---|---|---|
-|rural| 0.07 | 0.07 | 0.1 | 0.15 | 0.35 | 0.55 |
-|urban| 0.15 | 0.15 | 0.2 | 0.25 | 0.3 | 0.3 |
+| Terrain type / Stability class | A    | B    | C   | D    | E    | F    |
+|:-------------------------------|------|------|-----|------|------|------|
+| rural                          | 0.07 | 0.07 | 0.1 | 0.15 | 0.35 | 0.55 |
+| urban                          | 0.15 | 0.15 | 0.2 | 0.25 | 0.3  | 0.3  |
 
 Reference:
 - Bellasio, R.; Bianconi, R. A Heuristic Method for Modeling Odor Emissions from Open Roof Rectangular Tanks. Atmosphere 2022, 13, 367. https://doi.org/10.3390/atmos13030367
 
+
 ### Scheme 2 - Wind erosion of dust cumulus with available wind data
+
 The algorithm according to the EPA AP-42 methodology is the following:
 
-- Computation of the wind at 10 meters (1000 cm):
-  $$ w_s = w_s(z)\frac{\log(1000/z_0)}{\log(z/z_0)} $$
-  where $z_0$ is the roughness length (cm) and $z$ is the height at which the wind data are referred to.
+- Computation of the wind at 10 meters:
+
+$$w_s = w_s(z) \frac{\log(10/z_0)}{\log(z/z_0)}$$
+
+where $z_0$ is the roughness length and $z$ is the height at which the wind data are referred to.
 
 - Computation of fastest mile starting from wind speed:
+
 $$f_m = 1.6 w_s + 0.43$$
 
 
 - Cumulus surface is computed according to its shape:
-  1) trapezoidal prism shaped source
-  $$ T = \frac{l_{minor}}{2} - h$$
-  $$S = \frac{h (T + l_{minor})}{2} + l_{obl} l_{major} + T l_{major} + l_{obl} l_{major}+ \frac{h (T + l_{minor})}{2} $$
+
+  1) pyramid shaped source:
+
+  $$S = \frac{8}{5} l_{major} \sqrt{\left(\frac{ l_{major}}{5}\right)^2 + h^2}  + \frac{4}{3}l_{minor} \sqrt{\left( \frac{l_{minor}}{3}\right) ^2 + h^2}$$
   
   where $T$ is the top side of the trapezoid section, $l_{obl}$ is the oblique side of the trapezoid section, $h$ is the cumulus height, $l_{major}, l_{minor}$ are the horizontal dimensions.
 
-  2) conical shaped source
+  2) conical shaped source:
   
   $$S = \pi r \sqrt{r^2 + h^2}$$
 
-- Computation of friction velocity:
+- Computation of the friction velocities applied to the cumulus sub-areas:
 
   $$u_1^* = \max \left(0.4 \frac{f_m}{\log \frac{25}{z_0}} 0.2, u^*_{thr}\right)$$
 
@@ -213,33 +222,36 @@ $$f_m = 1.6 w_s + 0.43$$
 
   $$u_5^* = \max \left(0.4 \frac{f_m}{\log \frac{25}{z_0}}, u^*_{thr}\right)$$
 
-where $z_0$ is the roughness lenght (cm), $u^*_{thr}$ is the threshold friction velocity, both set in the configuration file.
+where $z_0$ is the roughness length, $u^*_{thr}$ is the threshold friction velocity, both set in the configuration file.
 
-- Computation of erosion potential:
+- Computation of the erosion potential for each sub-area:
 
-$$P_i = 58 (u_i^{*} - u^{*}_{thr})^{2} + 25(u_i^{*} - u^{*}_{thr})$$
+$$P_i = 58 \cdot \left( u^*_i - u^*_{thr} \right)^{2} + 25 \cdot \left( u_i^* - u^*_{thr} \right)$$
 
-with $i = 1,2,3,4,5$.
+with $i = 1, 2, 3, 4, 5$.
 
-- Computation of hourly emitted mass (mcg):
+- Computation of hourly emitted mass (µg/h):
 
-  a) if $\frac{h}{base} \le 0.2$:
-  $$e_{r} = k S P_5  10^6$$
+  a) If $\frac{h}{base} \le 0.2$ (low cumulus):
 
-  b) if $\frac{h}{base} > 0.2$:
+  $$e_{r} = k  S  P_5  10^6$$
+
+  b) If $\frac{h}{base} > 0.2$ (high cumulus):
 
     1) if the shape of cumulus is symmetric (conical)
 
-    $$e_{r} = k S \frac{40 P_1 + 48 P_2 + 12 P_3 + 0P_4}{100} 10^6$$
+    $$e_{r} = k  S  \frac{40 P_1 + 48 P_2 + 12 P_3 + 0P_4}{100} 10^6$$
 
     2) if the shape of cumulus is asymmetric and the wind direction w.r.t. the orientation of the cumulus is between [0°,20°]:
-    $$e_{r} = k S \frac{36 P_1 + 50 P_2 + 14 P_3 + 0P_4}{100} 10^6$$
-    3) if the shape of cumulus is asymmetric and the wind direction w.r.t. the orientation of the cumulus is between (20°,40°]:
-    $$e_{r} = k S \frac{31 P_1 + 51 P_2 + 15 P_3 + 3P_4}{100} 10^6$$
-    4) if the shape of cumulus is asymmetric and the wind direction w.r.t. the orientation of the cumulus is between (40°,90°]:
-    $$e_{r} = k S \frac{28 P_1 + 54 P_2 + 14 P_3 + 4P_4}{100} 10^6$$
+    $$e_{r} = k  S  \frac{36 P_1 + 50 P_2 + 14 P_3 + 0P_4}{100} 10^6$$
 
-with $k = 0.075$ for PM25, $k = 0.5$ for PM10, $k = 1$ for PTS.
+    3) if the shape of cumulus is asymmetric and the wind direction w.r.t. the orientation of the cumulus is between (20°,40°]:
+    $$e_{r} = k  S  \frac{31 P_1 + 51 P_2 + 15 P_3 + 3P_4}{100} 10^6$$
+
+    4) if the shape of cumulus is asymmetric and the wind direction w.r.t. the orientation of the cumulus is between (40°,90°]:
+    $$e_{r} = k  S  \frac{28 P_1 + 54 P_2 + 14 P_3 + 4P_4}{100} 10^6$$
+
+with $k$ multiplier depending on particle size: $k = 0.075$ for PM25, $k = 0.5$ for PM10, $k = 1$ for PTS.
 
 References: 
 
@@ -248,27 +260,32 @@ References:
 - Davis, F. K., and H. Newstein, 1968: The variation of gust factors and mean wind speed with height. J. Appl. Meteor., 7, 372–378
 
 
-### Scheme 3 - Wind erosion of dust cumulus with no available wind data
+### Scheme 3 - Wind erosion of dust cumulus with no wind data available
+
 The algorithm proposed in the simplified methodology of ARPA Toscana is summarized with the following formula:
 
-$$ e_r = 10^{9} e_f S m_h $$
+$$ e_r = e_f S \mathrm{mov}_h $$
 
-- $e_{r}$ is the emission rate (in mcg) (or hourly emitted pollutant mass) that will go in the output emission file;
-- $e_{f}$ is the pollutant emitted value:
-  1) if $\frac{h}{2r} > 0.2$, that is the high cumulus case, for the PM25, $= 1.26 \cdot 10^{-6}$, for the PM10, $= 7.9 \cdot 10^{-6}$, for the PTS, $= 1.6 \cdot 10^{-5}$,
-  2) se $\frac{h}{2r} \le 0.2$, that is the low cumulus case, for the PM25, $= 3.8 \cdot 10^{-5}$, for the PM10, $= 2.5 \cdot 10^{-4}$, for the PTS, $= 5.1 \cdot 10^{-4}$.
+- $e_{r}$ is the emission rate (in kg/h) (or hourly emitted pollutant mass). In the output emission file the emission will be written as µg/h;
+- $e_{f}$ is the pollutant emitted value (in kg/m^2):
+  1) if $\frac{h}{2r} > 0.2$, that is the high cumulus case, it is $e_f = 1.26 \cdot 10^{-6}$ for PM25; $e_f = 7.9 \cdot 10^{-6}$ for PM10; $e_f = 1.6 \cdot 10^{-5}$ for PTS;
+  2) if $\frac{h}{2r} \le 0.2$, that is the low cumulus case, it is $e_f = 3.8 \cdot 10^{-5}$ for PM25; $e_f = 2.5 \cdot 10^{-4}$ for PM10; $e_f = 5.1 \cdot 10^{-4}$ for PTS.
+
 - $S = \pi r \sqrt{r^2 + h^2}$ is the conical shape cumulus surface, where $h$ is the height and $r$ is the radius;
-- $m_{h}$ is the number of hourly movement of the cumulus;
+- $\mathrm{mov}_{h}$ is the number of hourly movements occurring on the cumulus;
 
 Reference:
 
 - Section 1.4 "Erosione del vento dai cumuli" del documento "Linee guida per la valutazione delle emissioni di polveri provenienti da attività di produzione, manipolazione, trasporto, carico o stoccaggio di materiali polverulenti" by Arpa Toscana.
 
 
-## Contacts
+## Contacts, questions and contributions
 
-`eolo` is developed by Massimiliano Romana (maintainer) and Giuseppe Carlino at [Simularia](https://www.simularia.it).
-For **bug fixing** and **feature requests** please [submit and issue](https://github.com/simularia/eolo/issues/new). For any other request, find us on [email](info@simularia.it).
+`eolo` is developed at [Simularia](https://www.simularia.it) by Massimiliano Romana (maintainer) and Giuseppe Carlino.
+
+**Bug fixing** and **feature requests**: please [submit and issue](https://github.com/simularia/eolo/issues/new).
+Contributions should be addressed with [pull requests](https://github.com/Simularia/eolo/pulls).
+For any other request, find us on [email](info@simularia.it).
 
 
 ## Licence
