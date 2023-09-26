@@ -202,13 +202,15 @@ $$f_m = 1.6 w_s + 0.43$$
 
 - Cumulus exposed surface is computed according to its shape:
 
-  1) trapezoidal prism shaped source
-  $$ T = \frac{l_{minor}}{2} - h$$
-  $$S = \frac{h (T + l_{minor})}{2} + l_{obl} l_{major} + T l_{major} + l_{obl} l_{major}+ \frac{h (T + l_{minor})}{2} $$
+  1) Trapezoidal prism shaped source
+
+    $$ T = \frac{l_{minor}}{2} - h$$
+
+    $$S = \frac{h (T + l_{minor})}{2} + l_{obl} l_{major} + T l_{major} + l_{obl} l_{major}+ \frac{h (T + l_{minor})}{2} $$
   
   where $T$ is the top side of the trapezoid section, $l_{obl}$ is the oblique side of the trapezoid section, $h$ is the cumulus height, $l_{major}, l_{minor}$ are the horizontal dimensions.
 
-  2) conical shaped source:
+  2) Conical shaped source:
   
   $$S = \pi r \sqrt{r^2 + h^2}$$
 
@@ -228,9 +230,9 @@ where $z_0$ is the roughness length, $u^*_{thr}$ is the threshold friction veloc
 
 - Computation of the erosion potential for each sub-area:
 
-$$P_i = 58 \cdot \left( u^*_i - u^*_{thr} \right)^{2} + 25 \cdot \left( u_i^* - u^*_{thr} \right)$$
+    $$P_i = 58 \cdot \left( u^*_i - u^*_{thr} \right)^{2} + 25 \cdot \left( u_i^* - u^*_{thr} \right)$$
 
-with $i = 1, 2, 3, 4, 5$.
+  with $i = 1, 2, 3, 4, 5$.
 
 - Computation of hourly emitted mass (µg/h):
 
