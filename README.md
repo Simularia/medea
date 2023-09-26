@@ -14,7 +14,8 @@ See [below](#algorithms-and-bibliographical-references) for a description of the
 
 The tool currently works with the following atmospheric dispersion models: CALPUFF, ARIA-IMPACT, SPRAY, AERMOD.
 
-To generate the *PDF* manual from this document, type this command on the terminal:
+To generate a *PDF* document from this file, type this command in the terminal:
+
 ```{sh}
 $ pandoc --to=pdf README.md -V geometry:margin=25mm -o README.pdf
 ```
@@ -22,7 +23,7 @@ $ pandoc --to=pdf README.md -V geometry:margin=25mm -o README.pdf
 
 ## How to use eolo
 
-In order to run `eolo`, some python packages are required. These can be installed via a virtual environment as in the following:
+In order to run `eolo`, some python packages are required. These can be installed inside a virtual environment as in the following:
 
 ```{sh}
 $ virtualenv venv
@@ -47,7 +48,7 @@ optional arguments:
 
 ## Configuration file
 
-The configuration file is in [*toml*](https://toml.io/en/) format. An example of configuration file `config.toml` is included in the repository.
+The configuration file is in [*toml*](https://toml.io/en/) format. An example `config.toml` is included in the repository.
 The keys of configuration file are described in the following:
 
 - `input`: string containing the path to the input emission file (`="./test/pemtim"`);
@@ -57,12 +58,12 @@ The keys of configuration file are described in the following:
   - = "postbin" : it tries to read a *postbin* file.
   - = "csv" : it tries to read a *csv* file.
   - by default (by omitting the field or filling it with an invalid value) it tries to read a *csv* file.
-- `windOutputFile`: string containing the path to the output meteo file and emission information of each source and species (`="./test/metout.csv"`);
+- `windOutputFile`: string containing the path to the output file with meteo and emission information for each source and species (`="./test/metout.csv"`);
 - `mode`: (integer number or string) eolo mode for the model choice:
-  - 0: spray
-  - 1: calpuff
-  - 2: impact
-  - 3: aermod
+  - 0 or "spray" ⟶ spray;
+  - 1 or "calpuff" ⟶ calpuff;
+  - 2 or "impact" ⟶ impact;
+  - 3 or "aermod" ⟶ aermod.
 - `pemspe`: string containing the path to the pemspe file: it is needed only in spray mode (mode = 0)
 - `sources`: it is a *toml* inline table, that is an array delimited by `[{...}, {...}, {...}]`, and each element is a "dictionary", in this form `{key1 = val1, key2 = val2, etc...}`, that describes a source. The key `scheme` defines the algorithm to apply to a source. The keys of a source's dictionary can be different as *ill be shown in the following.
 An example of values of this parameter is shown below:
@@ -115,12 +116,12 @@ Description of **specific** keys for each scheme:
   - `radius`: equivalent cumulus radius (m) (**mandatory**);
   - `movh`: hourly movement of cumulus number (**mandatory**).
 
-**Note**: geometrical information in the `config.toml` will not substitute those present in the emission file and no compatibility control is performed between the two file.
+**Note**: geometrical information in the `config.toml` will not substitute that present in the emission file and no compatibility control is performed between the two files.
 
 
 ## Working hypothesis
 
-Working hypothesis of`eolo` are hereafter summarised:
+Working hypothesis for`eolo` are hereafter summarised:
 
 - The meteorological input file is always required. It must contain at least all the deadlines included in the emission file;
 - In the SPRAY model case, pemtim and pemspe input files must be provided in the format specified in `./test/pemtim` and `./test/pemspe`;
@@ -151,6 +152,8 @@ Note: the `date` parameter is always necessary. Further mandatory parameters are
 
 Output meteorological file, specified in the toml configuration file with the key `windOutputFile`, will always be in the *csv* format and it will contain all input information and all the computed emission factor or emission values (according to the selected scheme), for all specified sources and species defined in the same configuration file.
 
+In the case of [scheme 1](#scheme-1---odour), the meteorological output file includes the hourly correction factors for each source.
+
 
 ## Test files
 
@@ -168,11 +171,11 @@ In the `./test/` folder some input emission files are provided as examples for a
 
 ### Scheme 1 - Odour
 
-Specific Odour Emission Rate (SOER) multiplicative factor:
+Odour emission correction factor:
 
-$$f = \left( \frac{w_s \left(\frac{z}{h}\right)^{\beta}}{v_{\text{ref}}}\right)^{\gamma}$$
+$$f = \left( \frac{w_s \left(\frac{h}{z}\right)^{\beta}}{v_{\text{ref}}}\right)^{\gamma}$$
 
-where $w_s$ is the wind speed, $\gamma = 0.5$, $z$ (m) is the reference height for the wind velocity, $h$ is the source height (m), $\beta$ is a parameter dependent on the terrain type and the stability class specified in the input meteorological file. If either the terrain type or the stability class is missing, then the default value of $\beta$ is set to 0.55, otherwise it is chosen according to the following table:
+where $w_s$ is the wind speed provided by the meteorological model or the anemometer (as written in the meteorological input file), $z$ (m) is the reference height for the wind velocity, $h$ is the source height (m), $\gamma = 0.5$  as reported in some guidelines and $\beta$ is a parameter dependent on the terrain type and the stability class specified in the input meteorological file. If either the terrain type or the stability class is missing, then the default value of $\beta$ is set to 0.55, otherwise it is chosen according to the following table:
 
 | Terrain type / Stability class | A    | B    | C   | D    | E    | F    |
 |:-------------------------------|------|------|-----|------|------|------|
@@ -185,7 +188,7 @@ Reference:
 
 ### Scheme 2 - Wind erosion of dust cumulus with available wind data
 
-The algorithm according to the EPA AP-42 methodology is the following:
+The algorithm according to the EPA AP-42 methodology is here summarized:
 
 - Computation of the wind at 10 meters:
 
@@ -197,12 +200,11 @@ where $z_0$ is the roughness length and $z$ is the height at which the wind data
 
 $$f_m = 1.6 w_s + 0.43$$
 
+- Cumulus exposed surface is computed according to its shape:
 
-- Cumulus surface is computed according to its shape:
-
-  1) pyramid shaped source:
-
-  $$S = \frac{8}{5} l_{major} \sqrt{\left(\frac{ l_{major}}{5}\right)^2 + h^2}  + \frac{4}{3}l_{minor} \sqrt{\left( \frac{l_{minor}}{3}\right) ^2 + h^2}$$
+  1) trapezoidal prism shaped source
+  $$ T = \frac{l_{minor}}{2} - h$$
+  $$S = \frac{h (T + l_{minor})}{2} + l_{obl} l_{major} + T l_{major} + l_{obl} l_{major}+ \frac{h (T + l_{minor})}{2} $$
   
   where $T$ is the top side of the trapezoid section, $l_{obl}$ is the oblique side of the trapezoid section, $h$ is the cumulus height, $l_{major}, l_{minor}$ are the horizontal dimensions.
 
@@ -240,24 +242,24 @@ with $i = 1, 2, 3, 4, 5$.
 
     1) if the shape of cumulus is symmetric (conical)
 
-    $$e_{r} = k  S  \frac{40 P_1 + 48 P_2 + 12 P_3 + 0P_4}{100} 10^6$$
+    $$e_{r} = k S \frac{40 P_1 + 48 P_2 + 12 P_3 + 0P_4}{100} 10^6$$
 
     2) if the shape of cumulus is asymmetric and the wind direction w.r.t. the orientation of the cumulus is between [0°,20°]:
-    $$e_{r} = k  S  \frac{36 P_1 + 50 P_2 + 14 P_3 + 0P_4}{100} 10^6$$
+    $$e_{r} = k S \frac{36 P_1 + 50 P_2 + 14 P_3 + 0P_4}{100} 10^6$$
 
     3) if the shape of cumulus is asymmetric and the wind direction w.r.t. the orientation of the cumulus is between (20°,40°]:
-    $$e_{r} = k  S  \frac{31 P_1 + 51 P_2 + 15 P_3 + 3P_4}{100} 10^6$$
+    $$e_{r} = k S \frac{31 P_1 + 51 P_2 + 15 P_3 + 3P_4}{100} 10^6$$
 
     4) if the shape of cumulus is asymmetric and the wind direction w.r.t. the orientation of the cumulus is between (40°,90°]:
-    $$e_{r} = k  S  \frac{28 P_1 + 54 P_2 + 14 P_3 + 4P_4}{100} 10^6$$
+    $$e_{r} = k S \frac{28 P_1 + 54 P_2 + 14 P_3 + 4P_4}{100} 10^6$$
 
-with $k$ multiplier depending on particle size: $k = 0.075$ for PM25, $k = 0.5$ for PM10, $k = 1$ for PTS.
+with $k$ multiplier depending on particle size: $k = 0.075$ for PM25; $k = 0.5$ for PM10; $k = 1$ for PTS.
 
 References: 
 
-- EPA AP-42: Compilation of Air Emissions Factors, Sezione 13.2.5 Industrial Wind Erosion https://www.epa.gov/air-emissions-factors-and-quantification/ap-42-compilation-air-emissions-factors 
+- EPA AP-42: Compilation of Air Emissions Factors, [Section 13.2.5 Industrial Wind Erosion](https://www.epa.gov/air-emissions-factors-and-quantification/ap-42-fifth-edition-volume-i-chapter-13-miscellaneous-0).
 
-- Davis, F. K., and H. Newstein, 1968: The variation of gust factors and mean wind speed with height. J. Appl. Meteor., 7, 372–378
+- Davis, F. K., and H. Newstein, 1968: The variation of gust factors with mean wind speed and with height. J. Appl. Meteor., 7, 372–378 [https://doi.org/10.1175/1520-0450(1968)007<0372:TVOGFW>2.0.CO;2](https://doi.org/10.1175/1520-0450\(1968\)007%3C0372:TVOGFW%3E2.0.CO;2)
 
 
 ### Scheme 3 - Wind erosion of dust cumulus with no wind data available
@@ -266,17 +268,23 @@ The algorithm proposed in the simplified methodology of ARPA Toscana is summariz
 
 $$ e_r = e_f S \mathrm{mov}_h $$
 
-- $e_{r}$ is the emission rate (in kg/h) (or hourly emitted pollutant mass). In the output emission file the emission will be written as µg/h;
-- $e_{f}$ is the pollutant emitted value (in kg/m^2):
-  1) if $\frac{h}{2r} > 0.2$, that is the high cumulus case, it is $e_f = 1.26 \cdot 10^{-6}$ for PM25; $e_f = 7.9 \cdot 10^{-6}$ for PM10; $e_f = 1.6 \cdot 10^{-5}$ for PTS;
-  2) if $\frac{h}{2r} \le 0.2$, that is the low cumulus case, it is $e_f = 3.8 \cdot 10^{-5}$ for PM25; $e_f = 2.5 \cdot 10^{-4}$ for PM10; $e_f = 5.1 \cdot 10^{-4}$ for PTS.
+where:
 
-- $S = \pi r \sqrt{r^2 + h^2}$ is the conical shape cumulus surface, where $h$ is the height and $r$ is the radius;
+- $e_{r}$ is the emission rate (or hourly emitted pollutant mass, in kg/h). In the output emission file the emission will be written as µg/h;
+
+- $e_{f}$ is the pollutant emitted value (in kg/m^2):
+
+  1) if $\frac{h}{2r} > 0.2$, that is the high cumulus case: $e_f = 1.26 \cdot 10^{-6}$ for PM25; $e_f = 7.9 \cdot 10^{-6}$ for PM10; $e_f = 1.6 \cdot 10^{-5}$ for PTS;
+
+  2) if $\frac{h}{2r} \le 0.2$, that is the low cumulus case: $e_f = 3.8 \cdot 10^{-5}$ for PM25; $e_f = 2.5 \cdot 10^{-4}$ for PM10; $e_f = 5.1 \cdot 10^{-4}$ for PTS.
+
+- $S = \pi r \sqrt{r^2 + h^2}$ is the surface of the conical shaped cumulus, where $h$ is the height and $r$ is the radius;
+
 - $\mathrm{mov}_{h}$ is the number of hourly movements occurring on the cumulus;
 
 Reference:
 
-- Section 1.4 "Erosione del vento dai cumuli" del documento "Linee guida per la valutazione delle emissioni di polveri provenienti da attività di produzione, manipolazione, trasporto, carico o stoccaggio di materiali polverulenti" by Arpa Toscana.
+- [ARPA Toscana, 2010: Linee guida per intervenire sulle attività che producono polveri](https://www.arpat.toscana.it/documentazione/catalogo-pubblicazioni-arpat/linee-guida-per-intervenire-sulle-attivita-che-producono-polveri), Section 1.4 *Erosione del vento dai cumuli*, in italian.
 
 
 ## Contacts, questions and contributions
