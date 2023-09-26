@@ -35,7 +35,7 @@ def odour(met, conf, ind):
         logger.debug("are available: computing beta.")
         beta = pd.DataFrame(
             columns=['val'],
-            data=tab[conf['sources'][ind]['terrain']][met['stabclass']-1]
+            data=tab[conf['sources'][ind]['terrain']][met['stabclass']]
             .to_list(),
             index=met.index.values.tolist())
         tmp = (met['ws']*(rat.pow(beta['val']))/vref)**gamma

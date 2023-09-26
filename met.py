@@ -25,7 +25,7 @@ def readmet(conf):
 
     if mettype == 'postbin':
         with open(conf['windInputFile'], 'r') as file:
-                lines = [line.rstrip() for line in file]
+            lines = [line.rstrip() for line in file]
         metdata = [['none', -1.0, -1.0, -1.0] for x in range(len(lines))]
         for ind in range(0, len(lines)):
             line = lines[ind].split()
@@ -44,8 +44,8 @@ def readmet(conf):
             # read input csv meteo file in a pandas dataframe
             met = pd.read_csv(conf['windInputFile'])
             if 'stabclass' in met.keys():
-                met.replace({'stabclass' : { 1 : 'A', 2 : 'B', 3 : 'C',
-                                            4 : 'D', 5 : 'E', 6 : 'F' ,
+                met = met.replace({'stabclass' : { 1 : 'A', 2 : 'B', 3 : 'C',
+                                            4 : 'D', 5 : 'E', 6 : 'F',
                                             'a' : 'A', 'b' : 'B', 'c' : 'C',
                                             'd' : 'D', 'e' : 'E', 'f' : 'F' }})
             logger.info("Correct reading of meteo file csv.")
