@@ -29,7 +29,7 @@ def odour(met, conf, ind):
         vref = 0.3
         logger.debug("Reference velocity not available from the")
         logger.debug(f"configuration toml file: {vref} default value.")
-    rat = met['z']/conf['sources'][ind]['height']
+    rat = conf['sources'][ind]['height']/met['z']
     if 'terrain' in conf['sources'][ind].keys() and 'stabclass' in met.keys():
         logger.debug("Terrain type and stability class information")
         logger.debug("are available: computing beta.")
