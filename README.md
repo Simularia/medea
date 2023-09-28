@@ -58,15 +58,14 @@ The keys of configuration file are described in the following:
   - = "postbin" : it tries to read a *postbin* file.
   - = "csv" : it tries to read a *csv* file.
   - by default (by omitting the field or filling it with an invalid value) it tries to read a *csv* file.
-- `windOutputFile`: string containing the path to the output file with meteo and emission information for each source and species (`="./test/metout.csv"`);
+- `windOutputFile`: string containing the path to the output file where meteo and emission information for each source and species are saved (`="./test/metout.csv"`);
 - `mode`: (integer number or string) eolo mode for the model choice:
   - 0 or "spray" ⟶ spray;
   - 1 or "calpuff" ⟶ calpuff;
   - 2 or "impact" ⟶ impact;
   - 3 or "aermod" ⟶ aermod.
 - `pemspe`: string containing the path to the pemspe file: it is needed only in spray mode (mode = 0)
-- `sources`: it is a *toml* inline table, that is an array delimited by `[{...}, {...}, {...}]`, and each element is a "dictionary", in this form `{key1 = val1, key2 = val2, etc...}`, that describes a source. The key `scheme` defines the algorithm to apply to a source. The keys of a source's dictionary can be different as *ill be shown in the following.
-An example of values of this parameter is shown below:
+- `sources`: it is a *toml* inline table, that is an array delimited by `[{...}, {...}, {...}]`, and each element is a "dictionary", in this form `{key1 = val1, key2 = val2, etc...}`, that describes a source. The key `scheme` defines the algorithm to apply to a source. The keys of a source's dictionary can be different as shown in the following example:
 
 ```
 sources = [
@@ -112,7 +111,7 @@ Description of **specific** keys for each scheme:
     - asymmetric (trapezoidal prism): `major`, `minor`, `angle`, sides of the base rectangle (m) and angle between the major side and the x-axis (anticlockwise, range -90°,+90°);
     - conic: `radius`, cone radius (m).
 
-- [scheme 3](#scheme-3-wind-erosion-of-dust-cumulus-with-no-wind-data-available):
+- [scheme 3](#scheme-3---wind-erosion-of-dust-cumulus-with-no-wind-data-available):
   - `radius`: equivalent cumulus radius (m) (**mandatory**);
   - `movh`: hourly movement of cumulus number (**mandatory**).
 
@@ -121,7 +120,7 @@ Description of **specific** keys for each scheme:
 
 ## Working hypothesis
 
-Working hypothesis for`eolo` are hereafter summarised:
+Working hypotheses for`eolo` are hereafter summarised:
 
 - The meteorological input file is always required. It must contain at least all the deadlines included in the emission file;
 - In the SPRAY model case, pemtim and pemspe input files must be provided in the format specified in `./test/pemtim` and `./test/pemspe`;
@@ -143,7 +142,7 @@ Currently, two formats are recognised:
     ```
 2. A text file in the *postbin* format. In this case, the field `mettype` has to be filled up with the string `postbin` in the toml configuration file.
 
-The `z` (wind field sensor height) and `stabclass` (stability class, specified with letters A,B,C,D,E,F or numbers 1,2,3,4,5,6) parameters are employed only with scheme number 1, while `ws` (wind speed) and `wd` (wind direction) are not needed by the scheme number 3.
+The `z` (wind field sensor height) and `stabclass` (stability class, specified with letters A, B, C, D, E, F+G or numbers 1, 2, 3, 4, 5, 6) parameters are employed only with scheme number 1, while `ws` (wind speed) and `wd` (wind direction) are not needed by the scheme number 3.
 
 Note: the `date` parameter is always necessary. Further mandatory parameters are specified in the scheme description.
 
@@ -203,7 +202,9 @@ $$f_m = 1.6 w_s + 0.43$$
 - Cumulus exposed surface is computed according to its shape:
 
   1) trapezoidal prism shaped source
-  $$ T = \frac{l_{minor}}{2} - h$$
+     
+  $$T = \frac{l_{minor}}{2} - h$$
+  
   $$S = \frac{h (T + l_{minor})}{2} + l_{obl} l_{major} + T l_{major} + l_{obl} l_{major}+ \frac{h (T + l_{minor})}{2} $$
   
   where $T$ is the top side of the trapezoid section, $l_{obl}$ is the oblique side of the trapezoid section, $h$ is the cumulus height, $l_{major}, l_{minor}$ are the horizontal dimensions.
@@ -228,7 +229,7 @@ where $z_0$ is the roughness length, $u^*_{thr}$ is the threshold friction veloc
 
 - Computation of the erosion potential for each sub-area:
 
-$$P_i = 58 \cdot \left( u^*_i - u^*_{thr} \right)^{2} + 25 \cdot \left( u_i^* - u^*_{thr} \right)$$
+$$P_{i} = 58 \cdot \left(u_{i}^* - u^*_{thr}\right)^{2} + 25 \cdot \left(u_{i}^* - u^*_{thr}\right)$$
 
 with $i = 1, 2, 3, 4, 5$.
 
