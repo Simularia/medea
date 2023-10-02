@@ -203,11 +203,9 @@ $$f_m = 1.6 w_s + 0.43$$
 
   1) Trapezoidal prism shaped source
 
-    $$ T = \frac{l_{minor}}{2} - h$$
-
-    $$S = \frac{h (T + l_{minor})}{2} + l_{obl} l_{major} + T l_{major} + l_{obl} l_{major}+ \frac{h (T + l_{minor})}{2} $$
+    $$S = \frac{h (T + l_{minor})}{2} + l_{obl} l_{major} + T l_{major} + l_{obl} l_{major}+ \frac{h (T + l_{minor})}{2}$$
   
-  where $T$ is the top side of the trapezoid section, $l_{obl}$ is the oblique side of the trapezoid section, $h$ is the cumulus height, $l_{major}, l_{minor}$ are the horizontal dimensions.
+  where $T = l_{minor} / 2 - h$ is the top side of the trapezoid section, $l_{obl}$ is the oblique side of the trapezoid section, $h$ is the cumulus height, $l_{major}, l_{minor}$ are the horizontal dimensions.
 
   2) Conical shaped source:
   
