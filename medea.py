@@ -67,10 +67,10 @@ def readconf(cFile):
 
 def main():
     """
-    EOLO main
+    MEDEA main
     """
 
-    desc = "EOLO: compute wind-dependent emissions for dispersion models."
+    desc = "MEDEA: compute wind-dependent emissions for dispersion models."
     parser = argparse.ArgumentParser(description=desc)
 
     parser.add_argument('config',
@@ -101,13 +101,13 @@ def main():
     logger.addHandler(ch)
 
     # Create log file handler
-    fh = logging.FileHandler(filename="eolo.log", mode="w")
+    fh = logging.FileHandler(filename="medea.log", mode="w")
     fh.setFormatter(formatter)
     fh.setLevel(logging.DEBUG)
     logger.addHandler(fh)
 
     logger.info("==========================")
-    logger.info("========= EOLO ===========")
+    logger.info("========= MEDEA ==========")
     logger.info(f"Version {__version__}")
     logger.info("Licence: AGPL-3.0-or-later")
     logger.info("==========================")
