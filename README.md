@@ -292,7 +292,7 @@ Reference:
 
 **Bug fixing** and **feature requests**: please [submit and issue](https://github.com/simularia/medea/issues/new).
 Contributions should be addressed with [pull requests](https://github.com/Simularia/medea/pulls).
-For any other request, find us on [email](info@simularia.it).
+For any other request, find us on [email](mailto:info@simularia.it).
 
 
 ## Licence
