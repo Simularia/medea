@@ -288,7 +288,7 @@ Reference:
 
 ## Contacts, questions and contributions
 
-`medea` is developed at [Simularia](https://www.simularia.it) by Massimiliano Romana (maintainer) and Giuseppe Carlino.
+`medea` is developed at [Simularia](https://www.simularia.it) by [Massimiliano Romana](https://github.com/mromanasimularia) (maintainer) and Giuseppe Carlino.
 
 **Bug fixing** and **feature requests**: please [submit and issue](https://github.com/simularia/medea/issues/new).
 Contributions should be addressed with [pull requests](https://github.com/Simularia/medea/pulls).
