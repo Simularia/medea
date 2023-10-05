@@ -1,0 +1,14 @@
+cff-version: 1.1.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Romana
+    given-names: Massimiliano
+    orcid: https://orcid.org/0000-0000-0000-0000
+  - family-names: Carlino
+    given-names: Giuseppe
+  - family-names: Prandi
+    given-names: Rossella
+title: Simularia/medea: 1.0.0
+version: 1.0.0
+date-released: 2023-10-05
+

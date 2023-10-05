@@ -6,6 +6,8 @@
 
 # MEDEA - Meteorological Dependent Emission Algorithms
 
+[![DOI](https://zenodo.org/badge/699299175.svg)](https://zenodo.org/badge/latestdoi/699299175)
+
 ## Introduction
 
 Use `medea` to compute **meteorological dependent emission** input files for many atmospheric pollution dispersion models. 
