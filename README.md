@@ -299,6 +299,6 @@ For any other request, find us on [email](mailto:info@simularia.it).
 
 ## Licence
 
-`medea` is [free software](https://fsfe.org/freesoftware/freesoftware.en.html) whose copyright holder is [Simularia s.r.l.](https://www.simularia.it) and it is distributed under the GNU Affero General Public License v3.0 or later. See [the LICENCE file](./LICENSES/AGPL-3.0-or-later.txt) for more information.
+`medea` is [free software](https://fsfe.org/freesoftware/freesoftware.en.html) whose copyright holder is [Simularia s.r.l.](https://www.simularia.it) and it is distributed under the GNU Affero General Public License v3.0 or later. See [the LICENSE file](./LICENSES/AGPL-3.0-or-later.txt) for more information.
 
 
