@@ -5,8 +5,10 @@ authors:
   given-names: "Massimiliano"
 - family-names: "Carlino"
   given-names: "Giuseppe"
+  orcid: https://orcid.org/0000-0001-5588-127X
 - family-names: "Prandi"
   given-names: "Rossella"
+  orcid: https://orcid.org/0000-0002-8905-6339
 title: "medea"
 version: 1.0.0
 doi: 10.5281/zenodo.8409948
