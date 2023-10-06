@@ -4,13 +4,13 @@
  SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
-# MEDEA - Meteorological Dependent Emission Algorithms
+# MEDEA - Meteorology Dependent Emission Algorithms
 
 [![DOI](https://zenodo.org/badge/699299175.svg)](https://zenodo.org/badge/latestdoi/699299175)
 
 ## Introduction
 
-Use `medea` to compute **meteorological dependent emission** input files for many atmospheric pollution dispersion models. 
+Use `MEDEA` to compute **meteorology dependent emission** input files for many atmospheric pollution dispersion models. 
 Emissions are computed according to different schemes suitable for **odour** and **particulate matter** modelling.
 See [below](#algorithms-and-bibliographical-references) for a description of the relevant algorithms and for bibliographical references.
 
@@ -23,9 +23,9 @@ $ pandoc --to=pdf README.md -V geometry:margin=25mm -o README.pdf
 ```
 
 
-## How to use medea
+## How to use MEDEA
 
-In order to run `medea`, some python packages are required. These can be installed inside a virtual environment as in the following:
+In order to run `MEDEA`, some python packages are required. These can be installed inside a virtual environment as in the following:
 
 ```{sh}
 $ virtualenv venv
@@ -34,11 +34,11 @@ $ source venv/bin/activate
 ```
 
 The included help, shows how to use the tool:
-```{sh}
+```
 (venv) $ ./medea.py -h
 usage: medea.py [-h] [-d] config
 
-MEDEA: compute wind-dependent emissions for dispersion models.
+MEDEA: compute meteorology dependent emissions for dispersion models.
 
 positional arguments:
   config       Path to input configuration toml file.
@@ -61,7 +61,7 @@ The keys of configuration file are described in the following:
   - = "csv" : it tries to read a *csv* file.
   - by default (by omitting the field or filling it with an invalid value) it tries to read a *csv* file.
 - `windOutputFile`: string containing the path to the output file where meteo and emission information for each source and species are saved (`="./test/metout.csv"`);
-- `mode`: (integer number or string) medea mode for the model choice:
+- `mode`: (integer number or string) MEDEA mode for the model choice:
   - 0 or "spray" ⟶ spray;
   - 1 or "calpuff" ⟶ calpuff;
   - 2 or "impact" ⟶ impact;
@@ -122,7 +122,7 @@ Description of **specific** keys for each scheme:
 
 ## Working hypothesis
 
-Working hypotheses for`medea` are hereafter summarised:
+Working hypotheses for`MEDEA` are hereafter summarised:
 
 - The meteorological input file is always required. It must contain at least all the deadlines included in the emission file;
 - In the SPRAY model case, pemtim and pemspe input files must be provided in the format specified in `./test/pemtim` and `./test/pemspe`;

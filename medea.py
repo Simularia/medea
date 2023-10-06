@@ -70,7 +70,7 @@ def main():
     MEDEA main
     """
 
-    desc = "MEDEA: compute wind-dependent emissions for dispersion models."
+    desc = "MEDEA: compute meteorolgy dependent emissions for dispersion models."
     parser = argparse.ArgumentParser(description=desc)
 
     parser.add_argument('config',
