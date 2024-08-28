@@ -10,31 +10,33 @@
 
 ## Introduction
 
-Use `MEDEA` to compute **meteorology dependent emission** input files for many atmospheric pollution dispersion models. 
+`MEDEA` is a tool to compute **meteorology dependent emission** input files for many atmospheric pollution dispersion models. 
 Emissions are computed according to different schemes suitable for **odour** and **particulate matter** modelling.
 See [below](#algorithms-and-bibliographical-references) for a description of the relevant algorithms and for bibliographical references.
 
-The tool currently works with the following atmospheric dispersion models: CALPUFF, ARIA-IMPACT, SPRAY, AERMOD.
-
-To generate a *PDF* document from this file, type this command in the terminal:
-
-```{sh}
-$ pandoc --to=pdf README.md -V geometry:margin=25mm -o README.pdf
-```
+The atmospheric dispersion models currently supported by `MEDEA` are:
+- CALPUFF
+- AERMOD
+- ARIA-Impact
+- SPRAY.
 
 
-## How to use MEDEA
+## Install `MEDEA`
 
+Download and uncompress the source files from [Github](https://github.com/Simularia/medea).
 In order to run `MEDEA`, some python packages are required. These can be installed inside a virtual environment as in the following:
 
-```{sh}
-$ virtualenv venv
+```sh
+$ python3 -m venv venv
 $ source venv/bin/activate
 (venv) $ pip install -r requirements.txt
 ```
 
+## How to use MEDEA
+
 The included help, shows how to use the tool:
-```
+
+```sh
 (venv) $ ./medea.py -h
 usage: medea.py [-h] [-d] config
 
@@ -47,6 +49,7 @@ optional arguments:
   -h, --help   show this help message and exit
   -d, --debug  Activate debug mode
 ```
+
 
 ## Configuration file
 
@@ -69,7 +72,7 @@ The keys of configuration file are described in the following:
 - `pemspe`: string containing the path to the pemspe file: it is needed only in spray mode (mode = 0)
 - `sources`: it is a *toml* inline table, that is an array delimited by `[{...}, {...}, {...}]`, and each element is a "dictionary", in this form `{key1 = val1, key2 = val2, etc...}`, that describes a source. The key `scheme` defines the algorithm to apply to a source. The keys of a source's dictionary can be different as shown in the following example:
 
-```
+```sh
 sources = [
     ### scheme 1 - odour source 
     { id = 1, scheme = 1, species = ["OU"], height = 5, 
@@ -90,6 +93,7 @@ sources = [
       height = 4, radius = 3.6, movh = 4} 
 ]
 ```
+
 Details on the **mandatory** keys that are **common** to all the schemes:
 
 - `id`: identifier string or number in the input emission file (it can also be a list, e.g. [1, 'source1', 'source 2']);
