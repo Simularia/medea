@@ -19,3 +19,5 @@
 *.pdf
 *.docx
 *.nc
+
+venv/
