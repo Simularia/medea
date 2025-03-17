@@ -1,0 +1,32 @@
+[project]
+name = "medea"
+dynamic = ["version"]
+authors = [
+    {name = "Massimilano Romana"},
+    {name = "Rossella Prandi", email = "r.prandi@simularia.it"},
+    {name = "Giuseppe Carlino", email = "g.carlino@simularia.it" }
+]
+maintainers = [
+    {name = "Giuseppe Carlino", email = "g.carlino@simularia.it" }
+]
+description = "MEDEA - Meteorology Dependent Emission Algorithms"
+readme = "README.md"
+license = { file = "LICENSE.txt" }
+dependencies = [
+    "numpy==1.26.4",
+    "pandas==2.2.3",
+    "python-dateutil==2.8.2",
+    "pytz==2023.3",
+    "six==1.16.0",
+    "tzdata==2023.3",
+]
+
+[project.scripts]
+medea = "medea.medea:main"
+
+[build-system]
+requires = ["setuptools >= 74.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.basedpyright]
+typeCheckingMode = "basic"
