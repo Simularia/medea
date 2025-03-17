@@ -8,11 +8,13 @@
 import argparse
 import logging
 from pathlib import Path
-from emifile import pemtim, calpuff, impact, aermod
-from met import readmet, writemet
-import tomli
+import tomllib
 
-__version__ = "1.0.2"
+from .emifile import pemtim, calpuff, impact, aermod
+from .met import readmet, writemet
+
+
+__version__ = "1.0.3.9999"
 
 
 def check_mode(input):
@@ -40,7 +42,7 @@ def readconf(cFile):
     logger.info("{}".format(readconf.__doc__))
     # Load the TOML data into a Python dictionary
     with open(cFile, "rb") as f:
-        conf = tomli.load(f)
+        conf = tomllib.load(f)
     # debug information
     logger.debug("Configuration toml file dump:")
     for key in conf.keys():
@@ -143,6 +145,7 @@ def main():
         logger.info("Editing impact file.")
         impact(conf, metout)
         logger.info("Impact file edited.")
+        # FIXME
 
     if (mode == 3) | (mode == "aermod"):
         # read and write aermod file
@@ -152,7 +155,3 @@ def main():
 
     logger.info("End of program.")
     return
-
-
-if __name__ == "__main__":
-    main()

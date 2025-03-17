@@ -109,7 +109,7 @@ def scheme2(met, conf, ind):
     logger.debug("{}".format(scheme2.__doc__))
     sou = conf["sources"][ind]
     if set(sou["species"]) != set(["PM25", "PM10", "PTS"]):
-        logger.info(f"Invalid species in source {sou['id']}: exit.")
+        logger.error(f"Invalid species {sou["species"]} in source {sou['id']}: exit.")
         sys.exit()
 
     listasym = ["major", "minor", "angle", "height"]
@@ -153,7 +153,8 @@ def scheme2(met, conf, ind):
         ppsa = sympar(True, 1.0)
         ppsa = np.repeat(a=ppsa, repeats=len(met["ws"]), axis=0)
         logger.debug(f"Source {sou['id']} has conical shape.")
-
+        logger.debug(f"Length of ws = {len(met["ws"])}")
+        logger.debug(f"Shape of ppsa = {np.shape(ppsa)}")
     else:
         logger.info(f"Undefined shape of source {sou['id']}: exit.")
         sys.exit()
@@ -195,6 +196,7 @@ def scheme2(met, conf, ind):
 
     # building the emission in mcg
     ptot = np.zeros(len(p[:, 0]), float)
+    logger.debug(f"lenght of p = {len(p)}")
     for ind in range(0, len(p)):
         ptot[ind] = np.dot(p[ind, :], ppsa[ind, :]) * (s / 100.0) * 10**6.0
 

@@ -5,10 +5,11 @@
 #
 
 import pandas as pd
-from factor import odour, scheme2, scheme3
 import logging
 import sys
 from datetime import datetime
+
+from .factor import odour, scheme2, scheme3
 
 
 def readmet(conf):
@@ -19,8 +20,8 @@ def readmet(conf):
         mettype = str(conf["mettype"]).lower()
         logger.info(f"Meteo file type is {mettype}.")
     except Exception as e:
-        logger.info(f"The error is {e}.")
-        logger.info("Setting meteo file to csv.")
+        logger.error(f"The error is {e}.")
+        logger.error("Setting meteo file to csv.")
         mettype = "csv"
 
     if mettype == "postbin":
@@ -63,8 +64,8 @@ def readmet(conf):
                 )
             logger.info("Correct reading of meteo file csv.")
         except Exception as e:
-            logger.info(f"Error reading {conf['windInputFile']}: exit.")
-            logger.info(f"The error is {e}.")
+            logger.error(f"Error reading {conf['windInputFile']}: exit.")
+            logger.error(f"The error is {e}.")
             sys.exit()
     return met
 

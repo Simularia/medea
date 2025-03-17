@@ -21,3 +21,6 @@
 *.nc
 
 venv/
+medea.egg-info/
+build/
+dist/

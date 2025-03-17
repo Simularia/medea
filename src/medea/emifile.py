@@ -206,7 +206,7 @@ def calpuff(conf, met):
 
 
 def impact(conf, met):
-    """Modulate emission from existing impact emissions input."""
+    """Modulate emission from existing Impact emissions input."""
     logger = logging.getLogger()
     logger.debug("{}".format(impact.__doc__))
 
