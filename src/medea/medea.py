@@ -67,7 +67,7 @@ def readconf(cFile):
     return conf
 
 
-def main():
+def medea():
     """
     MEDEA main
     """

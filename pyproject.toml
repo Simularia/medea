@@ -22,7 +22,7 @@ dependencies = [
 ]
 
 [project.scripts]
-medea = "medea.medea:main"
+medea = "medea.cli:medea"
 
 [build-system]
 requires = ["setuptools >= 74.0"]
