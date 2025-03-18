@@ -91,13 +91,13 @@ def asymsurface(major, minor, height):
 
     if height >= (minor / 2):
         logger.info("Invalid geometrical values of the cumulus")
-        logger.info(f"({height} >= {minor/2}) causes")
+        logger.info(f"({height} >= {minor / 2}) causes")
         logger.info("lateral slope over 45°: exit.")
         sys.exit()
     top = minor / 2 - height
     slope = 180.0 * math.atan(height / ((minor - top) / 2)) / math.pi
-    logger.info(f"Trapezoidal top side is {round(top,1)} meters and")
-    logger.info(f"the lateral slope is {round(slope,1)} degrees.")
+    logger.info(f"Trapezoidal top side is {round(top, 1)} meters and")
+    logger.info(f"the lateral slope is {round(slope, 1)} degrees.")
     oblique = math.sqrt(height**2 + ((minor - height) / 2) ** 2)
     s = height * (minor + top) + (2 * oblique + top) * major
     return s
@@ -109,7 +109,7 @@ def scheme2(met, conf, ind):
     logger.debug("{}".format(scheme2.__doc__))
     sou = conf["sources"][ind]
     if set(sou["species"]) != set(["PM25", "PM10", "PTS"]):
-        logger.error(f"Invalid species {sou["species"]} in source {sou['id']}: exit.")
+        logger.error(f"Invalid species {sou['species']} in source {sou['id']}: exit.")
         sys.exit()
 
     listasym = ["major", "minor", "angle", "height"]
@@ -153,7 +153,7 @@ def scheme2(met, conf, ind):
         ppsa = sympar(True, 1.0)
         ppsa = np.repeat(a=ppsa, repeats=len(met["ws"]), axis=0)
         logger.debug(f"Source {sou['id']} has conical shape.")
-        logger.debug(f"Length of ws = {len(met["ws"])}")
+        logger.debug(f"Length of ws = {len(met['ws'])}")
         logger.debug(f"Shape of ppsa = {np.shape(ppsa)}")
     else:
         logger.info(f"Undefined shape of source {sou['id']}: exit.")

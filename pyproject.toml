@@ -30,3 +30,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.basedpyright]
 typeCheckingMode = "basic"
+
+[tool.ruff.lint]
+select = ["NPY201"]
+

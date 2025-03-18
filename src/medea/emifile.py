@@ -27,7 +27,7 @@ def pemtim(conf, met):
     lspe = []
     for k in range(0, nspe):
         lspe.append(str(pemspe[3 + k].split("*")[1].replace(" ", "")))
-        logger.debug(f"Specie no. {k+1} is {lspe[k]}.")
+        logger.debug(f"Specie no. {k + 1} is {lspe[k]}.")
 
     # checking configuration file species
     for sou in conf["sources"]:
