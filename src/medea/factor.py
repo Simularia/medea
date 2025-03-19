@@ -54,7 +54,7 @@ def odour(met, conf, ind):
 
 def sympar(sym, alpha):
     if sym:
-        ppsa = np.array([40.0, 48.0, 12.0, 0.0])
+        ppsa = np.array([[40.0, 48.0, 12.0, 0.0]])
     if not sym:
         ppsa = np.empty((len(alpha), 4), dtype=float)
         for ind in range(0, len(alpha)):
@@ -109,7 +109,8 @@ def scheme2(met, conf, ind):
     logger.debug("{}".format(scheme2.__doc__))
     sou = conf["sources"][ind]
     if set(sou["species"]) != set(["PM25", "PM10", "PTS"]):
-        logger.error(f"Invalid species {sou['species']} in source {sou['id']}: exit.")
+        logger.error(f"Invalid species {sou['species']} in source {sou['id']}")
+        logger.error("PM25, PM10 and PTS are all required: exit")
         sys.exit()
 
     listasym = ["major", "minor", "angle", "height"]
@@ -151,7 +152,7 @@ def scheme2(met, conf, ind):
         s = math.pi * r * math.sqrt(r**2 + h**2)
         base = 2 * r
         ppsa = sympar(True, 1.0)
-        ppsa = np.repeat(a=ppsa, repeats=len(met["ws"]), axis=0)
+        ppsa = np.repeat(a=ppsa, repeats = len(met["ws"]), axis=0)
         logger.debug(f"Source {sou['id']} has conical shape.")
         logger.debug(f"Length of ws = {len(met['ws'])}")
         logger.debug(f"Shape of ppsa = {np.shape(ppsa)}")
@@ -159,12 +160,12 @@ def scheme2(met, conf, ind):
         logger.info(f"Undefined shape of source {sou['id']}: exit.")
         sys.exit()
 
-    if sou["height"] / base <= 0.2:
+    if h / base <= 0.2:
         psba = [1, 1, 1, 1]
     else:
         psba = [0.2, 0.6, 0.9, 1.1]
 
-    # roughness in cm to meters
+    # Convert roughness from cm to meters
     if "roughness" in sou.keys():
         z0 = sou["roughness"] / 100.0
     else:

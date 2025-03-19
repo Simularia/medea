@@ -213,20 +213,35 @@ def impact(conf, met):
     # opening the input impact emissions input
     file = pd.DataFrame(pd.read_csv(conf["input"], sep=";"))
 
+    # Create output emissions data structure
     lsout = []
+
     # collecting all sources involved in config.toml
     lsou = []
     for k in range(0, len(conf["sources"])):
         lsou.append(conf["sources"][k]["id"])
+
     # configuration file species
     cspe = []
     for sou in conf["sources"]:
         for spe in sou["species"]:
             cspe.append(spe)
+
+    # Check if all required species are present in the original emission file
+    for spe in cspe:
+        qspe = "Q_" + spe
+        try:
+            file.iloc[1][qspe]
+        except KeyError as e:
+            logger.error(f"{e} is missing in the original emission file.")
+            logger.error("Please provide emissions for all required species.")
+            sys.exit()
+
     # reading each lines of input
     for index, row in file.iterrows():
         date = datetime.strptime(row["DATEDEB"], "%d-%m-%Y %H:%M:%S")
-        metind = met.index[met["date"] == date.strftime("%Y-%m-%dT%H:%M:%SZ")]
+        date_str = date.strftime("%Y-%m-%dT%H:%M:%SZ")
+        metind = met.index[met["date"] == date_str]
         sou = row["SRCEID"]
         if sou in lsou:
             iconfsou = lsou.index(sou)
@@ -234,8 +249,13 @@ def impact(conf, met):
             for spe in cspe:
                 factor = met.iloc[metind][str(sou) + "_" + spe]
                 qspe = "Q_" + spe
-                if scheme == 1:
+                try:
                     oldmass = float(row[qspe])
+                except KeyError as e:
+                    logger.error(f"{e}")
+                    sys.exit()
+
+                if scheme == 1:
                     newmass = oldmass * factor._values
                 if (scheme == 2) | (scheme == 3):
                     newmass = factor._values

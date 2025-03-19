@@ -145,7 +145,6 @@ def medea():
         logger.info("Editing impact file.")
         impact(conf, metout)
         logger.info("Impact file edited.")
-        # FIXME
 
     if (mode == 3) | (mode == "aermod"):
         # read and write aermod file
