@@ -87,6 +87,17 @@ def readconf(cFile):
     conf["sources"] = oldsou + newsou
     logger.debug("Reading configuration file completed.")
 
+    # Validate schemes
+    logger.debug("Validating sources schemes")
+    valid_schemes = [1, 2, 3]
+    for i, sou in enumerate(conf["sources"]):
+        try:
+            scheme = sou["scheme"]
+        except Exception as e:
+            raise Exception(f"Error reading scheme for source {i}. Error message: {e}.")
+        if scheme not in valid_schemes:
+            raise ValueError(f"Invalid scheme \"{scheme}\" for source {sou["id"]}. Allowed schemes are {valid_schemes}")
+
     return conf
 
 
