@@ -21,6 +21,7 @@
 *.nc
 
 venv/
+.venv/
 medea.egg-info/
 build/
 dist/
