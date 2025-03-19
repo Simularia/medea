@@ -6,12 +6,13 @@
 #
 import argparse
 import logging
-from pathlib import Path
 import sys
-import tomllib
 from importlib.metadata import version
+from pathlib import Path
 
-from .emifile import pemtim, calpuff, impact, aermod
+import tomllib
+
+from .emifile import aermod, calpuff, impact, pemtim
 from .met import readmet, writemet
 
 
