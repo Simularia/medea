@@ -8,6 +8,7 @@
 import argparse
 import logging
 from pathlib import Path
+import sys
 import tomllib
 
 from .emifile import pemtim, calpuff, impact, aermod
@@ -17,22 +18,43 @@ from .met import readmet, writemet
 __version__ = "1.0.3.9999"
 
 
-def check_mode(input):
+def check_model(input):
+    """ Check input model """
     logger = logging.getLogger()
-    logger.info("{}".format(check_mode.__doc__))
+    logger.debug("{}".format(check_model.__doc__))
+
+    # List of valid models
+    valid_models = ["spray", "calpuff", "impact", "aermod"]
+    
     try:
         # Convert it into integer
         val = int(input)
-        logger.info(f"mode is an integer number. mode = {val}")
+        logger.debug(f"mode = {val} is an integer number.")
+
+        # Convert to string
+        if val == 0:
+            model = "spray"
+        elif val == 1:
+            model = "calpuff"
+        elif val == 2:
+            model = "impact"
+        elif val == 3:
+            model = "aermod"
+        else:
+            pass
     except ValueError:
-        try:
-            # Convert it into string
-            val = str(input)
-            val = val.lower()
-            logger.info(f"mode is a string. mode = {val}")
-        except ValueError:
-            logger.info(f"mode is not a string or a number. mode = {val}")
-    return val
+        # Convert it into string
+        model = str(input)
+        model = model.lower()
+        logger.debug(f"mode = {model} is a string.")
+    finally:
+        # Check if model is valid
+        if model not in valid_models:
+            raise ValueError(f"Invalid model: {model}. Allowed models are {valid_models}")
+        else:
+            logger.debug(f"Model {model} is valid.")
+
+    return model
 
 
 def readconf(cFile):
@@ -126,31 +148,27 @@ def medea():
     logger.info("Writing meteorological output file and")
     logger.info("computing new emission rescaling factor.")
     metout = writemet(conf, met)
-    mode = check_mode(conf["mode"])
+    # Get mode and check its validity
+    try:
+        mode = check_model(conf["mode"])
+    except Exception as e:
+        logger.error(f"{e}")
+        sys.exit()
 
-    if (mode == 0) | (mode == "spray"):
-        # read and write pemtim file
-        logger.info("Editing pemtim file.")
+    # read and write emission files
+    logger.info(f"Editing emission file for {mode}")
+    if mode == "spray":
         pemtim(conf, metout)
-        logger.info("Pemtim file edited.")
-
-    if (mode == 1) | (mode == "calpuff"):
-        # read and write calpuff file
-        logger.info("Editing calpuff file.")
+    elif mode == "calpuff":
         calpuff(conf, metout)
-        logger.info("Calpuff file edited.")
-
-    if (mode == 2) | (mode == "impact"):
-        # read and write impact file
-        logger.info("Editing impact file.")
+    elif mode == "impact":
         impact(conf, metout)
-        logger.info("Impact file edited.")
-
-    if (mode == 3) | (mode == "aermod"):
-        # read and write aermod file
-        logger.info("Editing aermod file.")
+    elif mode == "aermod":
         aermod(conf, metout)
-        logger.info("Aermod file edited.")
+    else:
+        logger.error("No model has been recognized.")
+        sys.exit()
+    logger.info("Emission file edited.")
 
     logger.info("End of program.")
     return
