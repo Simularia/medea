@@ -4,18 +4,15 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
-
 import argparse
 import logging
 from pathlib import Path
 import sys
 import tomllib
+from importlib.metadata import version
 
 from .emifile import pemtim, calpuff, impact, aermod
 from .met import readmet, writemet
-
-
-__version__ = "1.0.3.9999"
 
 
 def check_model(input):
@@ -129,7 +126,7 @@ def medea():
 
     logger.info("==========================")
     logger.info("medea")
-    logger.info(f"Version {__version__}")
+    logger.info(f"Version {version("medea")}")
     logger.info("Licence: AGPL-3.0-or-later")
     logger.info("==========================")
 
