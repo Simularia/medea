@@ -17,12 +17,13 @@ def readmet(conf):
     """Read meteo file in input."""
     logger = logging.getLogger()
     logger.info("{}".format(readmet.__doc__))
+    logger.info(f"Meteorological file is {conf["windInputFile"]}")
     try:
         mettype = str(conf["mettype"]).lower()
         logger.info(f"Meteo file type is {mettype}.")
     except Exception as e:
         logger.error(f"The error is {e}.")
-        logger.error("Setting meteo file to csv.")
+        logger.error("Setting meteo type to default value: csv.")
         mettype = "csv"
 
     if mettype == "postbin":
@@ -39,7 +40,7 @@ def readmet(conf):
             wd = float(line[10])
             metdata[ind] = [datestr, ws, wd, z]
         met = pd.DataFrame(metdata, columns=["date", "ws", "wd", "z"])
-        logger.info("Correct reading of meteo file postbin.")
+        logger.debug("Read postbin meteo file.")
     else:
         try:
             # read input csv meteo file in a pandas dataframe
@@ -63,18 +64,19 @@ def readmet(conf):
                         }
                     }
                 )
-            logger.info("Correct reading of meteo file csv.")
+            logger.info("Read csv meteo file.")
         except Exception as e:
-            logger.error(f"Error reading {conf['windInputFile']}: exit.")
-            logger.error(f"The error is {e}.")
+            logger.error(f"Error reading {conf['windInputFile']}.")
+            logger.error(f"{e}.")
             sys.exit()
+
     return met
 
 
 def writemet(conf, met):
     """Write meteo file in output with rescaling factors."""
     logger = logging.getLogger()
-    logger.debug("{}".format(writemet.__doc__))
+    logger.info("{}".format(writemet.__doc__))
 
     logger.debug("Loop on selected sources to rescale emissions.")
     for ind, sou in enumerate(conf["sources"]):
@@ -91,4 +93,5 @@ def writemet(conf, met):
     # write the output csv meteo and factor file
     logger.debug("Writing the output csv meteo and factor file.")
     met.to_csv(conf["windOutputFile"], index=False)
+
     return met

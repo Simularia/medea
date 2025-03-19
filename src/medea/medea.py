@@ -57,16 +57,18 @@ def check_model(input):
 
 def readconf(cFile):
     """Read toml configuration file."""
-
     logger = logging.getLogger()
     logger.info("{}".format(readconf.__doc__))
+
     # Load the TOML data into a Python dictionary
     with open(cFile, "rb") as f:
         conf = tomllib.load(f)
+
     # debug information
-    logger.debug("Configuration toml file dump:")
+    logger.debug("Configuration toml file dump (key: value):")
     for key in conf.keys():
         logger.debug(f"{key}: {conf[key]}")
+
     newsou = []
     for i, sou in enumerate(conf["sources"]):
         if isinstance(sou["id"], list):
@@ -83,7 +85,8 @@ def readconf(cFile):
             oldsou.append(conf["sources"][i])
     conf["sources"] = []
     conf["sources"] = oldsou + newsou
-    logger.debug("Configuration toml file read correctly.")
+    logger.debug("Reading configuration file completed.")
+
     return conf
 
 
@@ -131,18 +134,32 @@ def medea():
     logger.info("Licence: AGPL-3.0-or-later")
     logger.info("==========================")
 
-    # Get path of input and output files
-    cFile = Path(args.config)
     # read input configuration file
-    logger.info("Reading input configuration file.")
-    conf = readconf(cFile)
+    try:
+        logger.info("Reading input configuration file.")
+        cFile = Path(args.config)
+        conf = readconf(cFile)
+    except Exception as e:
+        logger.error(f"{e}")
+        sys.exit()
+
     # read meteorological file
-    logger.info("Reading meteorological input file.")
-    met = readmet(conf)
+    try:
+        logger.info("Reading meteorological input file.")
+        met = readmet(conf)
+    except Exception as e:
+        logger.error(f"{e}")
+        sys.exit()
+
     # write meteorological file
-    logger.info("Writing meteorological output file and")
-    logger.info("computing new emission rescaling factor.")
-    metout = writemet(conf, met)
+    try:
+        logger.info("Writing meteorological output file and")
+        logger.info("computing new emission rescaling factor.")
+        metout = writemet(conf, met)
+    except Exception as e:
+        logger.error(f"{e}")
+        sys.exit()
+
     # Get mode and check its validity
     try:
         mode = check_model(conf["mode"])
