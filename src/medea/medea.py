@@ -105,33 +105,30 @@ def medea():
     )
     args = parser.parse_args()
 
-    # Logging format
-    formatter = logging.Formatter(
-        "*** %(levelname)-7.7s - %(asctime)s - %(module)-19.19s "
-        + "- %(funcName)-19.19s - %(message)s"
-    )
     # Create Logger
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
     if args.debug:
         logger.setLevel(logging.DEBUG)
 
-    # Create console handler and set level to debug if needed
+    # Logging format
+    formatter = logging.Formatter(
+        "*** %(levelname)-7.7s – %(asctime)s – %(module)s – %(funcName)s – %(message)s"
+    )
+
+    # Create console handler
     ch = logging.StreamHandler()
     ch.setFormatter(formatter)
-    ch.setLevel(logging.INFO)
-    if args.debug:
-        ch.setLevel(logging.DEBUG)
     logger.addHandler(ch)
 
-    # Create log file handler
+    # Create log file handler (always debug level)
     fh = logging.FileHandler(filename="medea.log", mode="w")
     fh.setFormatter(formatter)
     fh.setLevel(logging.DEBUG)
     logger.addHandler(fh)
 
     logger.info("==========================")
-    logger.info("========= MEDEA ==========")
+    logger.info("medea")
     logger.info(f"Version {__version__}")
     logger.info("Licence: AGPL-3.0-or-later")
     logger.info("==========================")
