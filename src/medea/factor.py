@@ -86,14 +86,14 @@ def inc2alpha(input):
 
 
 def asymsurface(major, minor, height):
-    """Computation of asymmetric shape (trapezoidal prism)."""
+    """Computation of the surface of asymmetric pile (trapezoidal prism)."""
     logger = logging.getLogger()
     logger.debug("{}".format(asymsurface.__doc__))
 
     if height >= (minor / 2):
-        logger.info("Invalid geometrical values of the cumulus")
-        logger.info(f"({height} >= {minor / 2}) causes")
-        logger.info("lateral slope over 45°: exit.")
+        logger.error("Invalid geometrical values of the pile")
+        logger.error(f"({height} >= {minor / 2}) causes")
+        logger.error("lateral slope over 45°: exit.")
         sys.exit()
     top = minor / 2 - height
     slope = 180.0 * math.atan(height / ((minor - top) / 2)) / math.pi
