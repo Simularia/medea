@@ -1,5 +1,20 @@
 # `MEDEA` CHANGELOG
 
+## Version 1.1.0.b1
+
+- Introduce `medea` command line tool by adopting *src* layout.
+- Various bug fixes in the algorithm for `impact` model.
+- Update documentation.
+- Use `pyproject.toml` for packaging, requirements, installation, etc.
+- Update `numpy` and `pandas` dependencies.
+- Rename `test` folder to `tests`.
+
+## Version 1.0.3
+
+- Update documentation.
+- Add gitignore file
+- Required `pandas` is now compatible with python 3.12.
+
 ## Version 1.0.2
 
 - Python linting
