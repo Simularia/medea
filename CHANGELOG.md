@@ -1,6 +1,6 @@
 # `MEDEA` CHANGELOG
 
-## Version 1.1.0.b1
+## Version 1.1.2
 
 - Introduce `medea` command line tool by adopting *src* layout.
 - Various bug fixes in the algorithm for `impact` model.
